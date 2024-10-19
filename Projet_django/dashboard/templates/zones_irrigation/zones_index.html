@@ -1,0 +1,61 @@
+{% extends 'front/base.html' %}
+
+{% block content %}
+<section class="breadcrumbs">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="breadcrumb-wrapper">
+                    <div class="breadcrumb-cnt">
+                        <h1>Liste des Zones d'Irrigation</h1>
+                        <span><a href="{% url "homePageFront" %}">Home</a><i class="bi bi-arrow-right"></i>Zones d'Irrigation</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="contact-area sec-mar"class="contact-area sec-mar">
+    <div class="text-center my-4"> 
+        <a href="{% url 'zone_create' %}" class="btn btn-success">Ajouter une nouvelle zone</a>
+    </div>
+<div class="container">
+    <div class="row justify-content-center">  <!-- Centering the row -->
+        {% for zone in zones %}
+        <div class="col-md-4 mb-4"> <!-- Adjust the number of columns as needed -->
+            <div class="card text-center"> <!-- Add text-center to center the text -->
+                <div class="card-body">
+                    <h5 class="card-title">{{ zone.nom_zone }}</h5>
+                    <p class="card-text"><strong>Superficie:</strong> {{ zone.superficie }}</p>
+                    <p class="card-text"><strong>Type de Sol:</strong> {{ zone.type_sol }}</p>
+                    <p class="card-text"><strong>Besoin en Eau:</strong> {{ zone.besoin_eau }}</p>
+                    <div class="btn-group" role="group" aria-label="Actions">
+                        <a href="{% url 'zone_detail' zone.id %}" class="btn btn-info me-2" title="Détails">
+                            <i class="fas fa-info-circle"></i>
+                        </a>
+                        <a href="{% url 'zone_update' zone.id %}" class="btn btn-warning me-2" title="Modifier">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <form method="post" action="{% url 'zone_delete' zone.id %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger" title="Supprimer" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette zone ?');">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-warning text-center" role="alert"> <!-- Centering alert text -->
+                Aucune zone d'irrigation disponible.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+</section>
+{% endblock %}

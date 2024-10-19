@@ -7,6 +7,7 @@ from core.sitemaps import generate_sitemap
 from django.urls import re_path
 from django.views.static import serve
 
+
 urlpatterns = [
     path('oldadmin/', admin.site.urls),
     path('admin/' , RedirectView.as_view(pattern_name="adminHome"), name='adminRedirect'),
@@ -19,6 +20,7 @@ urlpatterns = [
     path('', include('legal.urls')),
     path('', include('marketing.urls')),
     path('', include('custompage.urls')),
+    path('', include('zones_irrigation.urls')),
     path('sitemap.xml', generate_sitemap, name='generate_sitemap'),
 ]
 

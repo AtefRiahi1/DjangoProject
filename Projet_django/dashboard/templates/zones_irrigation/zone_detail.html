@@ -1,0 +1,39 @@
+{% extends 'front/base.html' %}
+
+{% block content %}
+<section class="breadcrumbs">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="breadcrumb-wrapper">
+                    <div class="breadcrumb-cnt">
+                        <h1>Details</h1>
+                        <span><a href="{% url "zone_list" %}">Zones d'Irrigation</a><i class="bi bi-arrow-right"></i>Détails</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="contact-area sec-mar">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h1 class="card-title text-center">{{ zone.nom_zone }}</h1>
+                        <p class="card-text"><strong>Superficie:</strong> {{ zone.superficie }} ha</p>
+                        <p class="card-text"><strong>Type de Sol:</strong> {{ zone.type_sol }}</p>
+                        <p class="card-text"><strong>Besoin en Eau:</strong> {{ zone.besoin_eau }} m³</p>
+                        <div class="text-center">
+                            <a href="{% url 'zone_list' %}" class="btn btn-primary">Retour à la liste</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'marketing',
     'custompage',
     'ckeditor',
+    'zones_irrigation',
 ]
 
 MIDDLEWARE = [

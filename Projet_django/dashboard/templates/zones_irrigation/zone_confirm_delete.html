@@ -1,0 +1,7 @@
+<h1>Supprimer la Zone : {{ zone.nom_zone }}</h1>
+<p>Voulez-vous vraiment supprimer cette zone ?</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Supprimer</button>
+</form>
+<a href="{% url 'zone_list' %}">Annuler</a>
