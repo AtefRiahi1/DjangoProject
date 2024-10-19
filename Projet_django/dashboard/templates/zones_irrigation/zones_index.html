@@ -25,6 +25,11 @@
         <div class="col-md-4 mb-4"> <!-- Adjust the number of columns as needed -->
             <div class="card text-center"> <!-- Add text-center to center the text -->
                 <div class="card-body">
+                    {% if zone.image_zone %}
+                    <img src="{{ zone.image_zone.url }}" class="img-fluid" alt="Image de {{ zone.nom_zone }}">
+                {% else %}
+                    <p>Aucune image disponible pour cette zone.</p>
+                {% endif %}
                     <h5 class="card-title">{{ zone.nom_zone }}</h5>
                     <p class="card-text"><strong>Superficie:</strong> {{ zone.superficie }}</p>
                     <p class="card-text"><strong>Type de Sol:</strong> {{ zone.type_sol }}</p>

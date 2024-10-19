@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 @login_required
 def zone_list(request):
     print("zone_list called")
-    # Filtrer les zones d'irrigation pour n'afficher que celles de l'utilisateur connecté
+   
     zones = ZoneIrrigation.objects.filter(user=request.user)
     return render(request, 'zones_irrigation/zones_index.html', {'zones': zones})
 
@@ -19,11 +19,11 @@ def zone_detail(request, id):
 @login_required
 def zone_create(request):
     if request.method == 'POST':
-        form = ZoneIrrigationForm(request.POST)
+        form = ZoneIrrigationForm(request.POST, request.FILES)  
         if form.is_valid():
-            zone = form.save(commit=False)  # Ne pas sauvegarder encore
-            zone.user = request.user  # Assigner l'utilisateur connecté
-            zone.save()  # Maintenant, sauvegarder l'objet
+            zone = form.save(commit=False)  
+            zone.user = request.user  
+            zone.save() 
             return redirect('zone_list')
     else:
         form = ZoneIrrigationForm()

@@ -18,7 +18,7 @@
 
 <section class="contact-area sec-mar">
     <div class="container mt-5 d-flex justify-content-center">
-        <form method="post" class="bg-light p-4 rounded shadow" style="max-width: 600px; width: 100%;">
+        <form method="post" class="bg-light p-4 rounded shadow" style="max-width: 600px; width: 100%;" enctype="multipart/form-data">
             {% csrf_token %}
             <h3 class="mb-4 text-center">Détails de la Zone</h3>
             {{ form.as_p }}
