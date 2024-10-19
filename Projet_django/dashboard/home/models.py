@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.text import slugify
 from ckeditor.fields import RichTextField
+from accounts.models import User
 
 # Sliders Model
 class sliderSection(models.Model):
@@ -142,3 +143,26 @@ class homePageSEO(models.Model):
 
     def __str__(self):
         return self.meta_title
+
+class ConsommationEau(models.Model):
+    PHASES_CULTURE = [
+        ('Germination', 'Germination'),
+        ('Croissance', 'Croissance'),
+        ('Floraison', 'Floraison'),
+        ('Maturation', 'Maturation'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Relation avec l'utilisateur
+    id = models.AutoField(primary_key=True)
+    date_heure = models.DateTimeField()
+    quantite_consommee = models.FloatField()
+    temperature = models.FloatField()  # Température en °C
+    humidite = models.FloatField()      # Humidité en %
+    precipitations = models.FloatField()  # Précipitations en mm
+    type_culture = models.CharField(max_length=100)  # Type de culture
+    phase_culture = models.CharField(max_length=50, choices=PHASES_CULTURE)  # Phase de croissance de la culture
+
+    def __str__(self):
+        return f'{self.date_heure} - {self.quantité_consommée} L par {self.user.username}'
+    class Meta:
+        verbose_name_plural = "8.water consumption Section"

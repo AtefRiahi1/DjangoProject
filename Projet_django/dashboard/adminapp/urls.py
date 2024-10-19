@@ -73,4 +73,9 @@ urlpatterns = [
     path('admin/pages/contact-page', AdminContactPage, name='AdminContactPage'),
     path('admin/pages/terms-page', AdminTermsPage, name='AdminTermsPage'),
     path('admin/pages/policy-page', AdminPolicyPage, name='AdminPolicyPage'),
+
+    path('admin/consommationeaus', adminConsommationEauList, name='adminConsommationEauList'),
+    path('admin/consommationeau/create', adminConsommationEauCreate, name='adminConsommationEauCreate'),
+    path('admin/consommationeau/edit/<int:id>', adminConsommationEauEdit, name='adminConsommationEauEdit'),
+    path('admin/consommationeau/delete/<int:id>', adminConsommationEauDelete, name='adminConsommationEauDelete'),
 ]

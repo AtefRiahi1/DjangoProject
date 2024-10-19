@@ -1,0 +1,147 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block title %}{{ title }} - {{ seo_settings.meta_title }}{% endblock title %}
+{% block content %}
+<style>
+   label.switch {
+       margin-top: -35px;
+   }
+   @media only screen and (max-width: 600px) {
+     #ver-pills-tab {
+        display: -webkit-box;
+        margin-bottom: 18px;
+    }
+   }
+</style>
+<div class="page-body">
+   <div class="container-fluid">
+      <div class="page-title">
+         <div class="row">
+            <div class="col-6">
+               <h3>Edit Water Consumption</h3>
+            </div>
+            <div class="col-6">
+               <ol class="breadcrumb">
+                  <li class="breadcrumb-item">
+                     <a href="{% url 'adminHome' %}">
+                        <svg class="stroke-icon">
+                           <use href="{% static 'admin/assets/svg/icon-sprite.svg' %}#stroke-home"></use>
+                        </svg>
+                     </a>
+                  </li>
+                  <li class="breadcrumb-item">Water Consumption</li>
+                  <li class="breadcrumb-item active">Edit Water Consumption</li>
+               </ol>
+            </div>
+         </div>
+      </div>
+   </div>
+   <!-- Container-fluid starts-->
+   <div class="container-fluid">
+      <div class="row project-cards">
+         <div class="col-md-12 project-list">
+         </div>
+         <div class="container">
+            <form method="POST" enctype="multipart/form-data">
+               {% csrf_token %}
+               {{form.media}}   
+               {% if form.errors %}
+               <div class="alert alert-danger">
+                  <strong>Error:</strong>
+                  <ul>
+                     {% for field, errors in form.errors.items %}
+                     {% for error in errors %}
+                     <li>{{ field }}: {{ error }}</li>
+                     {% endfor %}
+                     {% endfor %}
+                  </ul>
+               </div>
+               {% endif %}                   
+
+               <div class="row mb-3">
+                  <div class="col-md-6">
+                     <div class="card">
+                        <div class="card-body">
+                           <label for="{{ form.date_heure.id_for_label }}" class="form-label">Date and Time</label>
+                           {{ form.date_heure }}
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-md-6">
+                     <div class="card">
+                        <div class="card-body">
+                           <label for="{{ form.quantite_consommee.id_for_label }}" class="form-label">Quantity Consumed (Liters)</label>
+                           {{ form.quantite_consommee }}
+                        </div>
+                     </div>
+                  </div>
+               </div>
+
+               <div class="row mb-3">
+                  <div class="col-md-6">
+                     <div class="card">
+                        <div class="card-body">
+                           <label for="{{ form.temperature.id_for_label }}" class="form-label">Temperature (°C, optional)</label>
+                           {{ form.temperature }}
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-md-6">
+                     <div class="card">
+                        <div class="card-body">
+                           <label for="{{ form.humidite.id_for_label }}" class="form-label">Humidity (%)</label>
+                           {{ form.humidite }}
+                        </div>
+                     </div>
+                  </div>
+               </div>
+
+               <div class="row mb-3">
+                  <div class="col-md-6">
+                     <div class="card">
+                        <div class="card-body">
+                           <label for="{{ form.precipitations.id_for_label }}" class="form-label">Precipitations (mm)</label>
+                           {{ form.precipitations }}
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-md-6">
+                     <div class="card">
+                        <div class="card-body">
+                           <label for="{{ form.type_culture.id_for_label }}" class="form-label">Type of Culture</label>
+                           {{ form.type_culture }}
+                        </div>
+                     </div>
+                  </div>
+               </div>
+
+               <div class="row mb-3">
+                  <div class="col-md-12">
+                     <div class="card">
+                        <div class="card-body">
+                           <label for="{{ form.phase_culture.id_for_label }}" class="form-label">Phase of Crop</label>
+                           {{ form.phase_culture }}
+                        </div>
+                     </div>
+                  </div>
+               </div>
+
+               <div class="row mb-3">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <label for="{{ form.user.id_for_label }}" class="form-label">Select Client</label>
+                            {{ form.user }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+               <button class="btn btn-primary mb-3" type="submit">Save</button>
+            </form>
+         </div>
+      </div>
+   </div>
+</div>
+<!-- Container-fluid Ends-->
+{% endblock %}

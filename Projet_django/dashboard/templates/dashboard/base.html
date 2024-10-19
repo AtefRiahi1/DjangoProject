@@ -255,6 +255,18 @@
             </li>
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#">
               <svg class="stroke-icon">
+                <use href="{% static 'admin/assets/svg/icon-sprite.svg' %}#stroke-others"></use>
+              </svg>
+              <svg class="fill-icon">
+                <use href="{% static 'admin/assets/svg/icon-sprite.svg' %}#fill-others"></use>
+              </svg><span>consommationeau</span></a>
+            <ul class="sidebar-submenu">
+              <li><a href="{% url 'adminConsommationEauList' %}">consommationeau List</a></li>
+              <li><a href="{% url 'adminConsommationEauCreate' %}">Create consommationeau</a></li>
+            </ul>
+          </li>
+            <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#">
+              <svg class="stroke-icon">
                 <use href="{% static 'admin/assets/svg/icon-sprite.svg' %}#stroke-form"></use>
               </svg>
               <svg class="fill-icon">

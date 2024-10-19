@@ -25,3 +25,5 @@ admin.site.register(testimonialsSection)
 
 # Home Page SEO Admin Register
 admin.site.register(homePageSEO)
+
+admin.site.register(ConsommationEau)
