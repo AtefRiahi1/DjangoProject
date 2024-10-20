@@ -1,0 +1,81 @@
+{% extends 'front/base.html' %}
+{% load static %}
+{% block title %} Consommation Eau - {{ seo_settings.meta_title }} {% endblock title %}
+{% block title1 %} Consommation Eau - {{ seo_settings.meta_title }} {% endblock title1 %}
+{% block title2 %} Consommation Eau - {{ seo_settings.meta_title }} {% endblock title2 %}
+{% block content %}
+
+    <main class="creasoft-wrap">
+
+        <div class="line_wrap">
+            <div class="line_item"></div>
+            <div class="line_item"></div>
+            <div class="line_item"></div>
+            <div class="line_item"></div>
+            <div class="line_item"></div>
+        </div>
+
+        <section class="breadcrumbs">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="breadcrumb-wrapper">
+                            <div class="breadcrumb-cnt">
+                                <h1>Consommation d'Eau</h1>
+                                <span><a href="{% url "homePageFront" %}">Home</a><i class="bi bi-arrow-right"></i>Consommation<i class="bi bi-arrow-right"></i>{{ consommationEau.id }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="service-details sec-mar-top">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="service-details-content">
+                            <h3><i class="bi bi-droplet"></i> Consommation d'Eau</h3>
+                            <p><strong>Date et Heure:</strong> {{ consommationEau.date_heure }}</p>
+                            <p><strong>Quantité Consommée:</strong> {{ consommationEau.quantite_consommee }} L</p>
+                            <p><strong>Température:</strong> {{ consommationEau.temperature }}°C</p>
+                            <p><strong>Humidité:</strong> {{ consommationEau.humidite }}%</p>
+                            <p><strong>Précipitations:</strong> {{ consommationEau.precipitations }} mm</p>
+                            <p><strong>Type de Culture:</strong> {{ consommationEau.type_culture }}</p>
+                            <p><strong>Phase de Culture:</strong> {{ consommationEau.phase_culture }}</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="sidebar-widget">
+                            <h4>Autres Consommations</h4>
+                            <ul class="category">
+                                {% for consommation in consommationEaus %}
+                                <li>
+                                    <a href="{% url "consommationEauDetail" consommation.id %}">
+                                        Consommation du {{ consommation.date_heure }} 
+                                        <br> <strong>Utilisateur:</strong> {{ consommation.user.username }} 
+                                        <br> <strong>Téléphone:</strong> {{ consommation.user.userprofile.phone }} <!-- Assumant que 'tel' est dans le profil utilisateur -->
+                                        <i class="bi bi-arrow-right"></i>
+                                    </a>
+                                </li>
+                            {% endfor %}
+                            
+                            </ul>
+                        </div>
+                        {% if settings.show_call_now_widget %}
+                            <div class="sidebar-banner">
+                                <img src="{% static 'front/assets/img/widget-banner-bg.jpg' %}" alt>
+                                <div class="banner-inner">
+                                    <h3>Pour Assistance <span>Appelez Maintenant.</span>
+                                        <img class="angle" src="{% static 'front/assets/img/arrow-angle.png' %}" alt>
+                                    </h3>
+                                    <a href="tel:{{ settings.phone }}">{{ settings.phone }}</a>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </section>
+
+{% endblock %}

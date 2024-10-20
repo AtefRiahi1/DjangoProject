@@ -149,6 +149,11 @@
     <li class="has-child {% if request.path == '/' %}active{% endif %}">
         <a href="{% url 'homePageFront' %}">Home</a>
     </li>
+    {% if request.user.is_authenticated %}
+    <li class="has-child {% if request.path == '/' %}active{% endif %}">
+        <a href="{% url 'consommationEauFrontPage' %}">Consommation d'eau</a>
+    </li>
+    {% endif %}
     <li class="has-child {% if request.path == '/about-us/' %}active{% endif %}">
         <a href="{% url 'aboutPageFront' %}">About Us</a>
     </li>

@@ -1,0 +1,132 @@
+{% extends 'front/base.html' %}
+{% load static %}
+{% block title %} {{seo.meta_title}} - {{seo.meta_description}} {% endblock title %}
+{% block title1 %} {{seo.meta_title}} - {{seo_settings.meta_title}} {% endblock title1 %}
+{% block title2 %} {{seo.meta_title}} - {{seo_settings.meta_title}} {% endblock title2 %}
+{% block content %}
+<style>
+    .premium-pricing h3{
+        color:white;
+    }
+    .premium-pricing span{
+        color:white;
+    }
+    .premium-pricing strong{
+        color:white;
+    }
+</style>
+
+    <main class="creasoft-wrap">
+
+        <div class="line_wrap">
+            <div class="line_item"></div>
+            <div class="line_item"></div>
+            <div class="line_item"></div>
+            <div class="line_item"></div>
+            <div class="line_item"></div>
+        </div>
+
+        <!-- Breadcrumbs Section -->
+        <section class="breadcrumbs">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="breadcrumb-wrapper">
+                            <div class="breadcrumb-cnt">
+                                <h1>Consommation d'eau</h1>
+                                <span><a href="{% url "homePageFront" %}">Home</a><i class="bi bi-arrow-right"></i>Consommation d'eau</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!--====================== Consommation d'Eau Section ======================-->
+        {% if consommationEaus %}
+        <section class="services-grid sec-mar">
+            <div class="container">
+                <div class="title-wrap">
+                    <div class="sec-title">
+                        <span>Surveillance</span>
+                        <h2>Consommation d'Eau</h2>
+                    </div>
+                </div>
+                <div class="row g-4">
+                    {% for consommation in consommationEaus %}
+                    <div class="col-md-6 col-lg-4 wow animate fadeInUp" data-wow-delay="200ms" data-wow-duration="1500ms">
+                        <div class="single-service">
+                            <span>0{{forloop.counter}}</span>
+                            {% if service.fontawesome_icon_class %}
+                                <div class="icon">
+                                    <i class="{{ service.fontawesome_icon_class }} service-ico"></i>
+                                </div>
+                            {% endif %}
+                            <span>{{ consommation.date_heure|date:"d/m/Y H:i" }}</span>
+                            <h4>Quantité consommée : {{ consommation.quantite_consommee }} litres</h4>
+                            <p>Température : {{ consommation.temperature }}°C</p>
+                            <p>Humidité : {{ consommation.humidite }}%</p>
+                            <p>Précipitations : {{ consommation.precipitations }} mm</p>
+                            <p>Type de culture : {{ consommation.type_culture }}</p>
+                            <p>Phase de culture : {{ consommation.phase_culture }}</p>
+                            <div class="read-btn">
+                                <a href="{% url "consommationEauDetail" consommation.id %}">Read More</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+        {% else %}
+        <p>Aucune donnée de consommation disponible pour l'instant.</p>
+        {% endif %}
+
+       <!--====================== Testimonials Section ======================-->
+       {% if testimonials %}
+        <section class="testimonial-area">
+            <div class="container-fluid p-0">
+                <div class="title-wrap">
+                    <div class="sec-title white">
+                        <span>Testimonial</span>
+                        <h2>Client Say About Us</h2>
+                    </div>
+                </div>
+                <div class="swiper testimonial-slider">
+                    <div class="swiper-wrapper">
+                        {% for testimonial in testimonials %}
+                            <div class="swiper-slide">
+                                <div class="single-testimonial">
+                                    <div class="quote">
+                                        <i class="fas fa-quote-right"></i>
+                                    </div>
+                                    <h5>{{ testimonial.name }}</h5>
+                                    <span>{{ testimonial.position }}</span>
+                                    
+                                    {% if testimonial.star %}
+                                    <div class="stars">
+                                        {% for i in "x"|rjust:testimonial.star %}
+                                            <a href="#"><i class="fas fa-star"></i></a>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                    <p>{{ testimonial.description }}</p>
+                                    {% if testimonial.image %}
+                                    <div class="reviewer">
+                                        <img src="{{ testimonial.image.url }}" alt>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="swiper-pagination d-md-none d-md-block"></div>
+                </div>
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
+            </div>
+        </section>
+        {% endif %}
+
+    </main>
+{% endblock %}

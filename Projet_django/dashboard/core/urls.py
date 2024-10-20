@@ -16,6 +16,7 @@ urlpatterns = [
     path('', include('home.urls')),
     path('', include('about.urls')),
     path('', include('contact.urls')),
+    path('', include('consommationEau.urls')),
     path('', include('legal.urls')),
     path('', include('marketing.urls')),
     path('', include('custompage.urls')),
@@ -29,6 +30,7 @@ handler404 = 'contact.views.error_404'
 handler404 = 'about.views.error_404'
 handler404 = 'settings.views.error_404'
 handler404 = 'legal.views.error_404'
+handler404 = 'consommationEau.views.error_404'
 
 handler500 = 'adminapp.views.error_500'
 
