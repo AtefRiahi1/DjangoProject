@@ -1,0 +1,51 @@
+{% extends 'front/base.html' %}
+
+{% block content %}
+<section class="breadcrumbs">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="breadcrumb-wrapper">
+                    <div class="breadcrumb-cnt">
+                        <h1>Sélectionner votre zone</h1>
+                        <span><a href="{% url "zone_list" %}">Zones d'Irrigation</a><i class="bi bi-arrow-right"></i>Prédiction</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <h1>Prédiction des Besoins en Eau</h1>
+
+    <form action="{% url 'water_need_prediction' %}" method="POST">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="zone">Choisissez une zone d'irrigation :</label>
+            <select name="zone_id" id="zone" class="form-control" required>
+                <option value="">Sélectionnez une zone</option>
+                {% for zone in zones %}
+                    <option value="{{ zone.id }}">{{ zone.nom_zone }} - Superficie: {{ zone.superficie }} m²</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-3">Prédire</button>
+    </form>
+
+    {% if error %}
+        <div class="alert alert-danger mt-3">{{ error }}</div>
+    {% endif %}
+</div>
+
+{% if besoin_eau %}
+<div class="container mt-5">
+    <h1>Résultat de la Prédiction</h1>
+    <p>Le besoin en eau estimé pour votre zone est : <strong>{{ besoin_eau|floatformat:2 }} litres</strong></p>
+    <a href="{% url 'zone_list' %}" class="btn btn-secondary mt-3">Retourner au formulaire</a>
+</div>
+{% endif %}
+
+{% endblock %}
