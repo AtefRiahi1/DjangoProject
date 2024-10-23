@@ -8,6 +8,8 @@ from about.models import *
 from about.forms import *
 from contact.models import *
 from contact.forms import *
+from planification.forms import IrrigationPlanForm
+from planification.models import IrrigationPlan
 from settings.models import *
 from settings.forms import *
 from menus.models import *
@@ -764,14 +766,58 @@ def AdminPolicyPage(request):
     }
     return render(request, 'dashboard/main/pages/policy.html', context)
 
+@login_required(login_url='logIn')
+@admin_role_required 
+def AdminIrrigationPlanList(request):
+    irrigation_plans = IrrigationPlan.objects.all()  
+    context = {
+        'title': 'Irrigation Plans List',
+        'irrigation_plans': irrigation_plans, 
+    }
+    return render(request, 'dashboard/main/irrigplansb/listplans.html', context)
+
+
+@login_required(login_url='logIn')
+@admin_role_required 
+def AdminIrrigationPlanCreate(request):
+    if request.method == 'POST':
+        form = IrrigationPlanForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Irrigation Plan created successfully!')
+            return redirect('AdminIrrigationPlanList')  # Redirect to a list or relevant page
+    else:
+        form = IrrigationPlanForm()
+    return render(request, 'your_template.html', {'form': form})
+
+
+
+@login_required(login_url='logIn')
+@admin_role_required # Edit an existing Irrigation Plan
+def AdminIrrigationPlanEdit(request, id):
+    irrigation_plan = get_object_or_404(IrrigationPlan, id=id)
+    if request.method == 'POST':
+        form = IrrigationPlanForm(request.POST, instance=irrigation_plan)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Irrigation Plan updated successfully!')
+            return redirect('AdminIrrigationPlanList')  # Redirect after editing
+    else:
+        form = IrrigationPlanForm(instance=irrigation_plan)
+    return render(request, 'your_edit_template.html', {'form': form, 'irrigation_plan': irrigation_plan})
+
+@login_required(login_url='logIn')
+@admin_role_required # Delete an Irrigation Plan
+def AdminIrrigationPlanDelete(request, id):
+    irrigation_plan = get_object_or_404(IrrigationPlan, id=id)
+    irrigation_plan.delete()
+    messages.success(request, 'Irrigation Plan deleted successfully!')
+    return redirect('AdminIrrigationPlanList')  
 # Error Page
 def error_404(request, exception):
     return render(request, 'error/404.html', status=404)
 
 def error_500(request):
     return render(request, 'error/500.html', status=500)
-
-    
-        
 
 

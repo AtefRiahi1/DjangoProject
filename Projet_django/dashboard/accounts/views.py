@@ -223,17 +223,21 @@ def logIn(request):
             username = request.POST.get('username')
             password = request.POST.get('login[password]')
             user = authenticate(request, username=username, password=password)
-            if user.role == 'Client':
-                login(request, user)
-                setting = headerFooterSetting.objects.first()
-                if setting:
-                    setting.header_button_text = 'Logout'  # Changez le texte en 'Logout'
-                    setting.header_button_url = '/logout'
-                    setting.save()
-                return redirect('homePageFront')
-            elif user is not None:
-                login(request, user)
-                return redirect('adminHome')
+
+            # Check if the user is authenticated
+            if user is not None:
+                print(f'Authenticated user: {user}')  
+                if hasattr(user, 'role') and user.role == 'Client':  # Check if user has a role attribute
+                    login(request, user)
+                    setting = headerFooterSetting.objects.first()
+                    if setting:
+                        setting.header_button_text = 'Logout'  # Change text to 'Logout'
+                        setting.header_button_url = '/logout'
+                        setting.save()
+                    return redirect('homePageFront')
+                else:
+                    login(request, user)
+                    return redirect('adminHome')
             else:
                 messages.warning(request, 'Invalid username or password!')
                 return redirect('logIn')
@@ -241,12 +245,13 @@ def logIn(request):
         else:
             demo_mode = True if 'core.middleware.middleware.DemoModeMiddleware' in settings.MIDDLEWARE else False
             context = {
-                'title' : 'Log In',
-                'demo_mode' : demo_mode
+                'title': 'Log In',
+                'demo_mode': demo_mode
             }
             return render(request, 'authenticate/auth/login.html', context)
     else:
         return redirect('adminHome')
+
 
 # # # # # # # # # # # # # # # # # #
           # LogOut #

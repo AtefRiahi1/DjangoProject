@@ -73,4 +73,8 @@ urlpatterns = [
     path('admin/pages/contact-page', AdminContactPage, name='AdminContactPage'),
     path('admin/pages/terms-page', AdminTermsPage, name='AdminTermsPage'),
     path('admin/pages/policy-page', AdminPolicyPage, name='AdminPolicyPage'),
+    path('admin/planslist/', AdminIrrigationPlanList, name='AdminIrrigationPlanList'),
+    path('admin/createp/', AdminIrrigationPlanCreate, name='adminIrrigationPlanCreate'),
+    path('admin/editp/<int:id>/', AdminIrrigationPlanEdit, name='adminIrrigationPlanEdit'),
+    path('admin/deletep/<int:id>/', AdminIrrigationPlanDelete, name='adminIrrigationPlanDelete'),
 ]
