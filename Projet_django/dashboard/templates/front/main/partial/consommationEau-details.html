@@ -43,6 +43,41 @@
                             <p><strong>Précipitations:</strong> {{ consommationEau.precipitations }} mm</p>
                             <p><strong>Type de Culture:</strong> {{ consommationEau.type_culture }}</p>
                             <p><strong>Phase de Culture:</strong> {{ consommationEau.phase_culture }}</p>
+                            <div class="btn-group" role="group" aria-label="Actions">
+                                <a href="{% url 'consommationEauEdit' consommationEau.id %}" class="btn btn-warning">Modifier</a>
+                                <a href="#" class="btn btn-danger" >
+                                    Supprimer
+                                </a>
+                                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+                                <script>
+                                    document.addEventListener('DOMContentLoaded', (event) => {
+                                        var deleteButtons = document.querySelectorAll('.btn.btn-danger');
+                                  
+                                        deleteButtons.forEach(function(button) {
+                                            button.addEventListener('click', function (event) {
+                                                event.preventDefault();
+                                  
+                                                var url = "{% url 'consommationEauDelete' consommationEau.id %}";
+                                  
+                                                Swal.fire({
+                                                    title: 'Are you sure?',
+                                                    text: "You won't be able to revert this!",
+                                                    icon: 'warning',
+                                                    showCancelButton: true,
+                                                    confirmButtonColor: '#3085d6',
+                                                    cancelButtonColor: '#d33',
+                                                    confirmButtonText: 'Yes, delete it!'
+                                                }).then((result) => {
+                                                    if (result.isConfirmed) {
+                                                        window.location.href = url;
+                                                    }
+                                                })
+                                            });
+                                        });
+                                    });
+                                  </script>
+                            </div>
                         </div>
                     </div>
                     <div class="col-lg-4">

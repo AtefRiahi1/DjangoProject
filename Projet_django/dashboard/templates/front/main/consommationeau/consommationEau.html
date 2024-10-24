@@ -52,6 +52,10 @@
                         <h2>Consommation d'Eau</h2>
                     </div>
                 </div>
+                <div class="create-btn" style="text-align: right; margin-bottom: 20px;">
+                    <a href="{% url 'consommationEauCreate' %}" class="btn btn-primary">Ajouter une nouvelle consommation</a>
+                </div>
+                
                 <div class="row g-4">
                     {% for consommation in consommationEaus %}
                     <div class="col-md-6 col-lg-4 wow animate fadeInUp" data-wow-delay="200ms" data-wow-duration="1500ms">
