@@ -1,0 +1,106 @@
+{% extends 'front/base.html' %}
+{% block title %}Liste des Recommandations et Météo{% endblock title %}
+
+{% block content %}
+<section class="breadcrumbs">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="breadcrumb-wrapper">
+                    <div class="breadcrumb-cnt">
+                        <h1>Liste des Recommandations </h1>
+                        <span><a href="{% url 'homePageFront' %}">Accueil</a><i class="bi bi-arrow-right"></i>Liste des Recommandations</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="recommendations-list sec-mar">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 recommendation-header">
+                <h2>Recommandations d'Irrigation</h2>
+            </div>
+            <div class="recommendation-cards col-md-12">
+                {% for recommandation in recommandations %}
+                    <a href="{% url 'detail_recommandation' recommandation.id %}" class="recommendation-card">
+                        <div class="recommendation-details">
+                            <p><i class="bi bi-calendar"></i> <strong>Date de recommandation :</strong> {{ recommandation.date_recommandation|date:"d-m-Y" }}</p>
+                            <p><i class="bi bi-plant"></i> <strong>Type de culture :</strong> {{ recommandation.crop_type|default:"Inconnu" }}</p> 
+                            <p><i class="bi bi-map"></i> <strong>Région :</strong> {{ recommandation.region|default:"Sousse" }}</p> 
+                            <p><i class="bi bi-thermometer"></i> <strong>Température moyenne :</strong> {{ recommandation.average_temperature|default:"Non renseignée" }} °C</p> 
+                            <p><i class="bi bi-droplet"></i> <strong>Précipitation totale :</strong> {{ recommandation.total_precipitation|default:"Non renseignée" }} mm</p> 
+                        </div>
+                    </a>
+                {% empty %}
+                    <div class="no-recommendations text-center">
+                        <p>Aucune recommandation disponible.</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Styles personnalisés pour les recommandations */
+    .recommendation-header {
+        text-align: center;
+        margin-bottom: 40px;
+        font-size: 2em;
+        color: #333;
+    }
+
+    .recommendation-cards {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .recommendation-card {
+        background: #fff;
+        border: 1px solid #ddd;
+        padding: 20px;
+        border-radius: 10px;
+        width: calc(33.333% - 20px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s, box-shadow 0.2s;
+        text-decoration: none; /* Enlever le soulignement du lien */
+        color: inherit; /* Garder la couleur du texte */
+    }
+
+    .recommendation-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .recommendation-details {
+        color: #555;
+    }
+
+    .recommendation-details p {
+        margin: 10px 0;
+        font-size: 1em;
+    }
+
+    .recommendation-details i {
+        margin-right: 8px;
+        color: #007bff; /* Couleur des icônes */
+    }
+
+    @media (max-width: 768px) {
+        .recommendation-card {
+            width: calc(50% - 20px);
+        }
+    }
+
+    @media (max-width: 576px) {
+        .recommendation-card {
+            width: 100%;
+        }
+    }
+</style>
+
+{% endblock %}

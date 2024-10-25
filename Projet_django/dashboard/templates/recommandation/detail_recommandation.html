@@ -1,0 +1,110 @@
+<!-- detail_recommandation.html -->
+
+{% extends 'front/base.html' %}
+
+{% block title %}Détails de la Recommandation{% endblock title %}
+
+{% block content %}
+<section class="breadcrumbs">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="breadcrumb-wrapper">
+                    <div class="breadcrumb-cnt">
+                        <h1>Détails de la Recommandation</h1>
+                        <span>
+                            <a href="{% url 'homePageFront' %}">Accueil</a>
+                            <i class="bi bi-arrow-right"></i>
+                            <a href="{% url 'liste_recommandations' %}">Liste des Recommandations</a>
+                            <i class="bi bi-arrow-right"></i>Détails
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    {% if messages %}
+        <div class="alert-container">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="recommendation-detail">
+        {% if recommandation %}
+            <h2><i class="bi bi-lightbulb"></i> <strong>Recommandation :</strong> {{ recommandation.conseil }}</h2>
+            <div class="details">
+                <p><i class="bi bi-calendar"></i> <strong>Date :</strong> {{ recommandation.date_recommandation|date:"d-m-Y" }}</p>
+                <p><i class="bi bi-plant"></i> <strong>Type de culture :</strong> {{ recommandation.crop_type|default:"Inconnu" }}</p>
+                <p><i class="bi bi-map"></i> <strong>Région :</strong> {{ recommandation.region|default:"Sousse" }}</p>
+                <p><i class="bi bi-thermometer"></i> <strong>Température :</strong> {{ recommandation.average_temperature|default:"Non renseignée" }} °C</p>
+                <p><i class="bi bi-droplet"></i> <strong>Précipitation :</strong> {{ recommandation.total_precipitation|default:"Non renseignée" }} mm</p>
+            </div>
+
+            <!-- Section Like/Dislike -->
+            <div class="feedback-section">
+                <h3>Votre avis sur cette recommandation</h3>
+                <div class="button-container"> <!-- Nouveau conteneur pour centrer les boutons -->
+                    <form action="{% url 'submit_feedback' recommandation.id %}" method="POST">
+                        {% csrf_token %}
+                        <button type="submit" name="feedback_type" value="like" class="btn btn-success">C'est Utile</button>
+                        <button type="submit" name="feedback_type" value="dislike" class="btn btn-danger">Ce n'est pas utile</button>
+                    </form>
+                </div>
+            </div>
+            
+
+        {% else %}
+            <p>Aucune recommandation disponible.</p>
+        {% endif %}
+    </div>
+
+    <style>
+        .recommendation-detail {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e0e0e0;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .button-container {
+            display: flex;
+            justify-content: center; /* Centre les éléments horizontalement */
+            margin-top: 20px; /* Ajoute un peu d'espace au-dessus */
+        }
+        
+        .btn-success, .btn-danger {
+            margin-right: 10px; /* Espace entre les boutons */
+        }
+        
+
+        .feedback-section {
+            margin-top: 30px;
+            padding: 15px;
+            background: #f1f1f1;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .alert-container {
+            margin-bottom: 20px;
+        }
+
+        button.btn-primary {
+            margin-top: 10px;
+        }
+
+        .btn-success, .btn-danger {
+            margin-right: 10px;
+        }
+    </style>
+
+{% endblock content %}

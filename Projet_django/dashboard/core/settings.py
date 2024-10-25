@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'marketing',
     'custompage',
     'ckeditor',
+    'recommandation',
 ]
 
 MIDDLEWARE = [
@@ -181,3 +182,6 @@ if os.getenv('WHITENOISE_CONFIG') == 'True':
               "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
          },
     }
+
+
+OPENWEATHERMAP_API_KEY = '6d3309e61dcc7234512aa7980faa53a3'

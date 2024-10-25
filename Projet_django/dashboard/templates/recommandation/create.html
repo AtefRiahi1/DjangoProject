@@ -1,0 +1,140 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% load customtag %}
+
+{% block title %}Ajouter une Recommandation - {{ seo_settings.meta_title }}{% endblock title %}
+
+{% block content %}
+<style>
+    /* Media query for mobile devices */
+    @media (max-width: 768px) {
+        #cke_id_description {
+            width: 309px !important;
+        }
+    }
+
+    /* Media query for desktop devices */
+    @media (min-width: 769px) {
+        #cke_id_description {
+            width: 980px !important;
+            position: relative;
+        }
+    }
+  
+    .password-input {
+        position: relative;
+    }
+
+    .toggle-password {
+        position: absolute;
+        top: 74px;
+        right: 38px;
+        transform: translateY(-50%);
+        cursor: pointer;
+    }
+</style>
+
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-6">
+                    <h3>Ajouter une Recommandation</h3>
+                </div>
+                <div class="col-6">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="{% url 'adminHome' %}">
+                                <svg class="stroke-icon">
+                                    <use href="{% static 'admin/assets/svg/icon-sprite.svg' %}#stroke-home"></use>
+                                </svg>
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item active">Ajouter Recommandation</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.media }}
+
+                {% if form.errors %}
+                <div class="alert alert-danger">
+                    <strong>Erreur !</strong>
+                    <ul>
+                        {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                        <li>{{ field }}: {{ error }}</li>
+                        {% endfor %}
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <label for="{{ form.conseil.id_for_label }}" class="form-label">Conseil <span class="text-danger">*</span></label>
+                                {{ form.conseil|add_class:'form-control' }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <label for="{{ form.date_recommandation.id_for_label }}" class="form-label">Date de Recommandation <span class="text-danger">*</span></label>
+                                {{ form.date_recommandation|add_class:'form-control' }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <label for="{{ form.crop_type.id_for_label }}" class="form-label">Type de Culture <span class="text-danger">*</span></label>
+                                {{ form.crop_type|add_class:'form-select' }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <label for="{{ form.region.id_for_label }}" class="form-label">Région <span class="text-danger">*</span></label>
+                                {{ form.region|add_class:'form-select' }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <label for="{{ form.average_temperature.id_for_label }}" class="form-label">Température Moyenne</label>
+                                {{ form.average_temperature|add_class:'form-control' }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <label for="{{ form.total_precipitation.id_for_label }}" class="form-label">Précipitation Totale</label>
+                                {{ form.total_precipitation|add_class:'form-control' }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary mb-5" type="submit">Ajouter</button>
+                <a href="{% url 'AdminRecommandationList' %}" class="btn btn-secondary mb-5">Retour à la liste</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

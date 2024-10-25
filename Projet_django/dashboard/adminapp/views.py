@@ -1,7 +1,15 @@
+import csv
+import os
+import pickle
+import random
+from django.utils import timezone
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+import joblib
+from sklearn.calibration import LabelEncoder
 from core.decorators import admin_role_required, both_role_required
+
 from home.models import *
 from home.forms import *
 from about.models import *
@@ -14,6 +22,10 @@ from menus.models import *
 from menus.forms import *
 from legal.models import *
 from legal.forms import *
+from recommandation.models import Recommandation  
+from recommandation.forms import  RecommandationForm
+from transformers import T5Tokenizer, T5ForConditionalGeneration
+import pandas as pd
 
 # # # # # # # # # # # # # # # # # #
         # Admin Home Page #
@@ -763,6 +775,242 @@ def AdminPolicyPage(request):
         'form' : form,
     }
     return render(request, 'dashboard/main/pages/policy.html', context)
+
+
+
+
+# # # # # # # # # # # # # # # # # #
+   # Recommandation #
+# # # # # # # # # # # # # # # # # #
+
+@login_required(login_url='logIn')
+@admin_role_required
+def AdminRecommandationList(request):
+    recommandations = Recommandation.objects.all()  # Récupération de toutes les recommandations
+    context = {
+        'title': 'Liste des Recommandations',
+        'recommandations': recommandations,
+    }
+    return render(request, 'recommandation/list.html', context)
+
+
+
+@login_required(login_url='logIn')
+@admin_role_required
+def AdminRecommandationUpdate(request, id):
+    recommandation = get_object_or_404(Recommandation, id=id)  # Récupération de la recommandation à modifier
+    if request.method == 'POST':
+        form = RecommandationForm(request.POST, instance=recommandation)  # Instanciation du formulaire avec l'objet existant
+        if form.is_valid():
+            form.save()  # Sauvegarde des modifications
+            messages.success(request, 'Recommandation mise à jour avec succès!')
+            return redirect('AdminRecommandationList')  # Redirection vers la liste des recommandations
+    else:
+        form = RecommandationForm(instance=recommandation)  # Pré-remplissage du formulaire avec l'objet existant
+
+    context = {
+        'title': 'Modifier la Recommandation',
+        'form': form,
+    }
+    return render(request, 'recommandation/edit.html', context)
+
+from django.http import JsonResponse
+
+@login_required(login_url='logIn')
+@admin_role_required
+def AdminRecommandationDelete(request, id):
+    recommandation = get_object_or_404(Recommandation, id=id)  # Récupération de la recommandation à supprimer
+    if request.method == 'DELETE':  # Vérification que la méthode est DELETE pour confirmer la suppression
+        recommandation.delete()  # Suppression de la recommandation
+        messages.warning(request, 'Recommandation supprimée!')
+        return JsonResponse({'success': True})  # Retourne un succès en JSON
+
+    context = {
+        'title': 'Supprimer la Recommandation',
+        'recommandation': recommandation,
+    }
+    return render(request, 'recommandation/confirm_delete.html', context)  # Page de confirmation de suppression
+
+
+
+
+# Charger le modèle et les encodeurs
+model_path = r'C:\Users\user\Desktop\DjangoProject\Projet_django\dashboard\recommandation\data\irrigation_model.pkl'
+model = joblib.load(model_path)
+crop_encoder = joblib.load(r'C:\Users\user\Desktop\DjangoProject\Projet_django\dashboard\recommandation\data\crop_encoder.pkl')
+region_encoder = joblib.load(r'C:\Users\user\Desktop\DjangoProject\Projet_django\dashboard\recommandation\data\region_encoder.pkl')
+
+@login_required(login_url='logIn')
+def AdminRecommandationCreate(request):
+    if request.method == 'POST':
+        form = RecommandationForm(request.POST)
+        if form.is_valid():
+            recommandation_obj = form.save(commit=False)
+            recommandation_obj.date_recommandation = timezone.now().date()
+
+            # Générer une recommandation automatique
+            recommendation = generate_recommendation(
+                recommandation_obj.crop_type,
+                recommandation_obj.region,
+                recommandation_obj.average_temperature,
+                recommandation_obj.total_precipitation
+            )
+
+            recommandation_obj.conseil = recommendation
+            recommandation_obj.save()
+
+            messages.success(request, 'Recommandation créée avec succès!')
+            return redirect('AdminRecommandationList')
+    else:
+        form = RecommandationForm()
+
+    context = {
+        'title': 'Créer une Recommandation',
+        'form': form,
+    }
+    return render(request, 'recommandation/create.html', context)
+
+import pandas as pd
+import logging
+
+# Configuration du logging
+import pandas as pd
+
+def generate_recommendation(crop_type, region, average_temperature, total_precipitation):
+    """
+    Génère une recommandation d'irrigation basée sur le type de culture, la région,
+    la température moyenne et la précipitation totale.
+    """
+
+    # Vérification des entrées
+    if not isinstance(crop_type, str) or not isinstance(region, str):
+        return "Le type de culture et la région doivent être des chaînes de caractères."
+    
+    if not isinstance(average_temperature, (int, float)):
+        return "La température moyenne doit être un nombre."
+    
+    if not isinstance(total_precipitation, (int, float)):
+        return "La précipitation totale doit être un nombre."
+    
+    if average_temperature < -30 or average_temperature > 50:
+        return "La température moyenne est en dehors de la plage raisonnable."
+    
+    if total_precipitation < 0:
+        return "La précipitation totale ne peut pas être négative."
+
+    # Créer un DataFrame à partir des données d'entrée
+    new_data = {
+        'Crop_Type': [crop_type],
+        'Region': [region],
+        'Average_Temperature_C': [average_temperature],
+        'Total_Precipitation': [total_precipitation]
+    }
+
+    new_df = pd.DataFrame(new_data)
+    
+    # Appliquer les transformations (si nécessaire pour l'encodage des colonnes catégorielles)
+    new_df['Crop_Type'] = crop_encoder.transform(new_df['Crop_Type'])
+    new_df['Region'] = region_encoder.transform(new_df['Region'])
+
+    print("DataFrame avant la prédiction :")
+    print(new_df)
+
+    try:
+        # Prédiction avec le modèle
+        prediction = model.predict(new_df)
+    except Exception as e:
+        print(f"Erreur lors de la prédiction: {e}")
+        return "Erreur lors de la prédiction."
+
+    # Logique d'irrigation améliorée
+    if total_precipitation >= 1500:  # Précipitation très suffisante
+        irrigation_level = "faible"
+    elif total_precipitation < 500:  # Précipitation très insuffisante
+        irrigation_level = "élevée"
+    else:
+        # Intervalle de précipitation modéré
+        if average_temperature > 30:
+            irrigation_level = "élevée"
+        else:
+            irrigation_level = "modérée"
+
+    # Générer la recommandation d'irrigation
+    recommendation_text = (f"Puisque la température est {average_temperature}°C et que "
+                           f"la précipitation est {'suffisante' if total_precipitation >= 100 else 'insuffisante'} "
+                           f"({total_precipitation} mm), une irrigation {irrigation_level} est suggérée "
+                           f"pour {crop_type} dans la région {region}.")
+
+    # Ajout de recommandations supplémentaires
+    additional_recommendations = []
+
+    if average_temperature > 35:
+        additional_recommendations.append("Il est conseillé de surveiller le stress hydrique sur les cultures.")
+    
+    if total_precipitation > 2000:
+        additional_recommendations.append("Des mesures doivent être prises pour éviter le ruissellement des eaux.")
+    
+    if crop_type.lower() in ['maïs', 'riz'] and total_precipitation < 800:
+        additional_recommendations.append("Considérez des pratiques de couverture pour conserver l'humidité du sol.")
+    
+    if region.lower() in ['sud', 'sahara'] and average_temperature > 40:
+        additional_recommendations.append("Pensez à des cultures adaptées aux climats arides.")
+
+    # Combiner les recommandations
+    if additional_recommendations:
+        recommendation_text += "\nRecommandations supplémentaires : " + " | ".join(additional_recommendations)
+
+    # Enregistrement des résultats dans le fichier CSV
+    record = {
+        'crop_type': crop_type,
+        'region': region,
+        'average_temperature': average_temperature,
+        'total_precipitation': total_precipitation,
+        'recommendation': recommendation_text
+    }
+
+    results_file = r'C:\Users\user\Desktop\DjangoProject\Projet_django\dashboard\recommandation\data\results.csv'
+    write_to_csv(record, results_file)
+
+    return recommendation_text
+
+
+
+def write_to_csv(record, file_path):
+    file_exists = os.path.isfile(file_path)
+
+    try:
+        with open(file_path, 'a', newline='', encoding='utf-8') as f:
+            writer = csv.DictWriter(f, fieldnames=record.keys())
+            if not file_exists:
+                writer.writeheader()
+            writer.writerow(record)
+    except Exception as e:
+        print(f"Erreur lors de l'enregistrement dans le fichier CSV: {e}")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # Error Page
 def error_404(request, exception):
