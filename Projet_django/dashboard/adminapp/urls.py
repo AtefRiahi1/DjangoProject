@@ -73,4 +73,10 @@ urlpatterns = [
     path('admin/pages/contact-page', AdminContactPage, name='AdminContactPage'),
     path('admin/pages/terms-page', AdminTermsPage, name='AdminTermsPage'),
     path('admin/pages/policy-page', AdminPolicyPage, name='AdminPolicyPage'),
+
+# Admin sensors URLS
+   # path('admin/capteurs', AdminCapteurList, name='adminCapteurList'),
+    #path('admin/capteurs/create', AdminCapteurCreate, name='adminCapteurCreate'),
+    #path('admin/capteurs/edit/<int:id>', AdminCapteurEdit, name='adminCapteurEdit'),
+    #path('admin/capteurs/delete/<int:id>', AdminCapteurDelete, name='adminCapteurDelete'),
 ]

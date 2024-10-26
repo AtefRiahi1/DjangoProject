@@ -1,0 +1,16 @@
+<!-- capteurs/templates/capteurs/sensor_form.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Create/Update Sensor</title>
+  </head>
+  <body>
+    <h1>{{ form.instance.pk|yesno:"Update Sensor,Create Sensor" }}</h1>
+    <form method="POST">
+      {% csrf_token %} {{ form.as_p }}
+      <button type="submit">Save</button>
+    </form>
+    <a href="{% url 'sensor_list' %}">Back to Sensor List</a>
+  </body>
+</html>

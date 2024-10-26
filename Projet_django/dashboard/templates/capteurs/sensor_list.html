@@ -1,0 +1,22 @@
+<!-- capteurs/templates/capteurs/sensor_list.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Sensor List</title>
+  </head>
+  <body>
+    <h1>Sensor List</h1>
+    <a href="{% url 'sensor_create' %}">Create New Sensor</a>
+    <ul>
+      {% for sensor in sensors %}
+      <li>
+        {{ sensor.type_capteur }} at {{ sensor.localisation }} - Status: {{
+        "Actif" if sensor.status else "Inactif" }}
+        <a href="{% url 'sensor_update' sensor.pk %}">Edit</a> |
+        <a href="{% url 'sensor_delete' sensor.pk %}">Delete</a>
+      </li>
+      {% endfor %}
+    </ul>
+  </body>
+</html>
