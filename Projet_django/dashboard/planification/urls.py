@@ -7,5 +7,7 @@ urlpatterns = [
     path('update/<int:pk>/', views.irrigation_plan_update, name='irrigation_plan_update'), 
     path('deleteplan/<int:pk>/', views.irrigation_plan_delete, name='irrigation_plan_delete'),
     path('apiplans/', views.irrigation_plans_view, name='irrigation-plans'),
-
+    path('location-form/', views.location_form, name='location_form'),
+    path('results/', views.results_view, name='results_page'),
+    path('add-irrigation/', views.add_irrigation, name='add_irrigation'),
 ]
