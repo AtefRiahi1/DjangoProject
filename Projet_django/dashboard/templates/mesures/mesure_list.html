@@ -32,12 +32,15 @@
   <a href="{% url 'mesure_create' capteur.id %}" class="btn btn-primary mb-3"
     ><i class="bi bi-plus"></i>Ajouter une mesure</a
   >
+  <a href="{% url 'predict_irrigation' capteur.id %}" class="btn btn-success mb-3"
+    ><i class="bi bi-info"></i>Prédire Irrigation</a
+  >
   <table class="table table-bordered table-striped shadow ">
     <thead>
       <tr>
         <th>Date</th>
-        <th>Temperature (°C)</th>
-        <th>Humidity (%)</th>
+        <th>Temperature du sol (°C)</th>
+        <th>Moisisure du sol</th>
         <th>Actions</th>
       </tr>
     </thead>
@@ -46,7 +49,7 @@
       <tr>
         <td>{{ mesure.date_mesure }}</td>
         <td>{{ mesure.temperature }}</td>
-        <td>{{ mesure.humidity }}</td>
+        <td>{{ mesure.moisture }}</td>
         <td>
           <form
             method="post"

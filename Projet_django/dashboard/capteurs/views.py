@@ -2,6 +2,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Capteur, Mesure
 from .forms import CapteurForm, MesureForm
 from django.utils.dateparse import parse_date
+import pickle
+import numpy as np
+
+
 
 # List all sensors (Read)
 def sensor_list(request):
@@ -74,3 +78,28 @@ def mesure_delete(request, mesure_id):
     capteur_id = mesure.capteur.id
     mesure.delete()
     return redirect('mesure_list', capteur_id=capteur_id)
+
+
+# Load the trained model once during app startup
+with open('capteurs/utils/irrigation_model.pkl', 'rb') as f:
+    model = pickle.load(f)
+
+def predict_irrigation(request,sensor_id):
+    # Get all measurements for the given sensor
+    capteur = get_object_or_404(Capteur, id=sensor_id)
+    mesures = capteur.mesures.all()
+
+    # Prepare the input data for prediction
+    temperatures = [mesure.temperature for mesure in mesures]
+    moistures = [mesure.moisture for mesure in mesures]
+    input_data = np.array([temperatures, moistures]).T  # Shape (n, 2)
+
+    # Predict irrigation for each measurement
+    predictions = model.predict(input_data)
+
+    # Update the should_irrigate field in Mesure table
+    for i, mesure in enumerate(mesures):
+        mesure.should_irrigate = bool(predictions[i])
+        mesure.save()
+
+    return render(request, 'mesures/irrigation_result.html', {'capteur': capteur, 'mesures': mesures})
