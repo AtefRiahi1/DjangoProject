@@ -1,0 +1,76 @@
+{% extends 'front/base.html' %} {% block content %}
+
+
+
+<section class="breadcrumbs">
+  <div class="container">
+      <div class="row">
+          <div class="col-12">
+              <div class="breadcrumb-wrapper">
+                  <div class="breadcrumb-cnt">
+                      <h1>Liste des Mesures</h1>
+                      <span><a href="{% url "homePageFront" %}">Home</a><i class="bi bi-arrow-right"></i><a href="{% url "sensor_list" %}">Capteurs</a><i class="bi bi-arrow-right"></i>Mesures</span>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</section>
+
+<section class="container my-4">
+  <h2>Liste des mesures de {{ capteur.nom_capteur }}</h2>
+  <!-- Search Form -->
+  <form method="get" class="mb-3">
+    <div class="input-group">
+        <input type="date" name="search_date" class="form-control" 
+               value="{{ search_date }}" placeholder="Rechercher par date">
+        <button class="btn btn-primary" type="submit">Rechercher</button>
+    </div>
+</form>
+
+
+  <a href="{% url 'mesure_create' capteur.id %}" class="btn btn-primary mb-3"
+    ><i class="bi bi-plus"></i>Ajouter une mesure</a
+  >
+  <table class="table table-bordered table-striped shadow ">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Temperature (°C)</th>
+        <th>Humidity (%)</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for mesure in mesures %}
+      <tr>
+        <td>{{ mesure.date_mesure }}</td>
+        <td>{{ mesure.temperature }}</td>
+        <td>{{ mesure.humidity }}</td>
+        <td>
+          <form
+            method="post"
+            action="{% url 'mesure_delete' mesure.id %}"
+            style="display: inline"
+          >
+            {% csrf_token %}
+            <button
+              type="submit"
+              class="btn btn-danger"
+              onclick="return confirm('Voulez-vous supprimer cette mesure ?');"
+            >
+            <i class="bi bi-trash"></i>
+              Supprimer
+            </button>
+          </form>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="4" class="text-center">Aucune mesure disponible.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

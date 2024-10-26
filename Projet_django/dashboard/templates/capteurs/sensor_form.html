@@ -1,16 +1,45 @@
-<!-- capteurs/templates/capteurs/sensor_form.html -->
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Create/Update Sensor</title>
-  </head>
-  <body>
-    <h1>{{ form.instance.pk|yesno:"Update Sensor,Create Sensor" }}</h1>
-    <form method="POST">
-      {% csrf_token %} {{ form.as_p }}
-      <button type="submit">Save</button>
-    </form>
-    <a href="{% url 'sensor_list' %}">Back to Sensor List</a>
-  </body>
-</html>
+
+
+{% extends 'front/base.html' %}
+
+{% block content %}
+<section class="breadcrumbs">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="breadcrumb-wrapper">
+                    <div class="breadcrumb-cnt">
+                        <h1>{{ form.instance.pk|yesno:"Modifier un Capteur,Créer un Capteur" }}</h1>
+                        <span>
+                          <a href="{% url "sensor_list" %}">Liste des Capteurs</a>
+                          <i class="bi bi-arrow-right"></i>
+                          {{ form.instance.pk|yesno:"Modifier un Capteur,Créer un Capteur" }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="contact-area sec-mar">
+    <div class="container mt-5 d-flex justify-content-center">
+        <form method="post" class="bg-light p-4 rounded shadow" style="width: 100%;" enctype="multipart/form-data">
+            {% csrf_token %}
+            <h3 class="mb-4 text-left">Détails du Capteur</h3>
+            {{ form.as_p }}
+
+            <div class="d-flex justify-content-between mt-3">
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-save"></i> Sauvegarder
+                </button>
+                <a href="{% url 'sensor_list' %}" class="btn btn-secondary">
+                    <i class="bi bi-x-circle"></i> Annuler
+                </a>
+            </div>
+        </form>
+    </div>
+</section>
+
+
+{% endblock %}

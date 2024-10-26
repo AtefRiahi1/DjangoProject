@@ -152,6 +152,10 @@
     <li class="has-child {% if request.path == '/about-us/' %}active{% endif %}">
         <a href="{% url 'aboutPageFront' %}">About Us</a>
     </li>
+    
+    <li class="has-child {% if request.path == '/capteurs/list/' %}active{% endif %}">
+        <a href="{% url 'sensor_list' %}">Capteurs</a>
+    </li>
 
     <li class="has-child {% if request.path == '/contact-us/' %}active{% endif %}">
         <a href="{% url 'contactPageFront' %}">Contact Us</a>

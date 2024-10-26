@@ -17,7 +17,7 @@ urlpatterns = [
     path('', include('legal.urls')),
     path('', include('marketing.urls')),
     path('', include('custompage.urls')),
-    path('', include('capteurs.urls')),
+    path('capteurs/', include('capteurs.urls')),
     path('sitemap.xml', generate_sitemap, name='generate_sitemap'),
 ]
 
