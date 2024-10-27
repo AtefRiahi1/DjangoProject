@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import IrrigationPlan  
-from .forms import IrrigationPlanForm, LocationForm  
+from .models import IrrigationPlan, IrrigationSchedule  
+from .forms import IrrigationPlanForm, IrrigationScheduleForm, LocationForm  
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 import requests
@@ -14,7 +14,9 @@ from sklearn.preprocessing import StandardScaler
 from tensorflow.keras.losses import MeanSquaredError
 import os
 from datetime import datetime, timedelta, timezone
+import logging
 
+logger = logging.getLogger(__name__)
 # List all irrigation schedules
 WEATHER_API_KEY = '5465bc7d107d41f9a01162729242510'
 GEOCODE_API_KEY = 'ce9cf096220d40458d0e3b2502573bf0'
@@ -77,6 +79,78 @@ def irrigation_plans_view(request):
 
     return JsonResponse(data, safe=False)
 
+#Schedule ----------------------------------------------------------
+@login_required
+def irrigation_schedule_list(request):
+
+    irrigation_schedules = IrrigationSchedule.objects.filter(user=request.user)  
+    return render(request, 'front/irrigplan/myschedule.html', {'irrigation_schedules': irrigation_schedules})
+
+def add_irrigation_schedule(request):
+    if request.method == 'POST':
+        form = IrrigationScheduleForm(request.POST)
+        if form.is_valid():
+            schedule = form.save(commit=False)
+            schedule.user = request.user
+            schedule.save()   
+
+            return redirect('irrigation_schedule_list')  
+    else:
+        form = IrrigationScheduleForm()
+    
+    return render(request, 'front/irrigplan/addschedule.html', {'form': form})
+
+@login_required
+def irrigation_schedule_update(request, pk):
+    irrigation_schedule = get_object_or_404(IrrigationSchedule, pk=pk, user=request.user)
+
+    # Fetching all irrigation plans for the current user
+    irrigation_plans = IrrigationPlan.objects.filter(user=request.user)
+
+    if request.method == 'POST':
+        form = IrrigationScheduleForm(request.POST, instance=irrigation_schedule, schedule_instance=irrigation_schedule)
+        if form.is_valid():
+            updated_schedule = form.save(commit=False)
+            updated_schedule.user = request.user
+            updated_schedule.save()
+
+            selected_plan_ids = request.POST.getlist('irrigation_plans')
+            irrigation_schedule.plans.all().delete()
+
+            for plan_id in selected_plan_ids:
+                try:
+                    plan = IrrigationPlan.objects.get(id=plan_id)
+                    plan.schedule = updated_schedule
+                    plan.save()
+                except IrrigationPlan.DoesNotExist:
+                    continue
+
+            messages.success(request, 'Irrigation schedule updated successfully!')
+            return redirect('irrigation_schedule_list')
+        else:
+            print("Form is invalid:", form.errors)  # Debugging statement
+
+    else:
+        form = IrrigationScheduleForm(instance=irrigation_schedule, schedule_instance=irrigation_schedule)
+
+    return render(request, 'front/irrigplan/editschedule.html', {
+        'form': form,
+        'irrigation_schedule': irrigation_schedule,
+        'irrigation_plans': irrigation_plans,
+    })
+
+
+@login_required  
+def irrigation_schedule_delete(request, pk):
+    irrigation_schedule = get_object_or_404(IrrigationSchedule, pk=pk, user=request.user) 
+    if request.method == 'POST':
+        irrigation_schedule.delete()
+        messages.warning(request, 'Irrigation schedule deleted!')
+        return JsonResponse({'success': True})  
+    
+    return JsonResponse({'success': False, 'message': 'Invalid request method.'}, status=400)
+
+#Ai -------------------------------------------------------------------------------------
 def get_current_weather(location):
     
     response = requests.get(f"{BASE_GEOCODE_URL}?q={location}&key={GEOCODE_API_KEY}")
