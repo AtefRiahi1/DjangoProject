@@ -87,45 +87,37 @@ def consommationEauDelete(request, id):
 def show_prediction(request):
     user = request.user
 
-    # Entraîner le modèle et récupérer les colonnes utilisées
     model, model_columns = train_model(user)
 
-    # Récupérer les données pour l'utilisateur
     user_data = ConsommationEau.objects.filter(user=user).values()
     user_df = pd.DataFrame(user_data)
 
-    # Utiliser les dernières données de l'utilisateur pour prédire
     if not user_df.empty:
-        # Prédire pour chaque jour du mois
         monthly_predictions = []
 
-        for day in range(1, 31):  # Boucle pour chaque jour du mois
+        for day in range(1, 31):
             last_data = user_df.iloc[-1]
             input_data = {
-                'temperature': last_data['temperature'],  # Utiliser les dernières données
+                'temperature': last_data['temperature'], 
                 'humidite': last_data['humidite'],
                 'precipitations': last_data['precipitations'],
                 'type_culture': last_data['type_culture'],
                 'phase_culture': last_data['phase_culture']
             }
 
-            # Convertir en DataFrame pour la prédiction
             input_df = pd.DataFrame([input_data])
             input_df = pd.get_dummies(input_df, columns=['type_culture', 'phase_culture'], drop_first=True)
 
-            # Aligner les colonnes
             for col in model_columns:
                 if col not in input_df.columns:
-                    input_df[col] = 0  # Ajouter une colonne avec des zéros si elle n'existe pas
+                    input_df[col] = 0  
 
             input_df = input_df.reindex(columns=model_columns, fill_value=0)
 
-            # Faire la prédiction pour le jour
             daily_prediction = model.predict(input_df)
 
-            monthly_predictions.append(daily_prediction[0])  # Ajouter à la liste des prédictions
+            monthly_predictions.append(daily_prediction[0]) 
 
-        # Calculer la consommation totale pour le mois
         total_monthly_consumption = sum(monthly_predictions)
 
         return render(request, 'front/main/consommationeau/prediction_mensuelle.html', {'predicted_consumption': total_monthly_consumption})
