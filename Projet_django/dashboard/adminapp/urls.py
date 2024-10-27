@@ -80,4 +80,10 @@ urlpatterns = [
     path('admin/capteurs/create', adminSensorCreate, name='adminCapteurCreate'),
     path('admin/capteurs/edit/<int:id>', adminSensorEdit, name='adminCapteurEdit'),
     path('admin/capteurs/delete/<int:id>', adminSensorDelete, name='adminCapteurDelete'),
+
+   # Admin mesures URLS
+    
+    path('admin/capteurs/<int:capteur_id>/mesures/',adminMesureList,name='adminMesureList'),
+    path('admin/capteurs/mesures/<int:mesure_id>/delete/', adminMesureDelete, name='adminMesureDelete'),
+    #path('admin/predict/<int:sensor_id>/', views.predict_irrigation, name='predict_irrigation'),
 ]

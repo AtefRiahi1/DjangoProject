@@ -70,32 +70,13 @@
                     <circle cx="12" cy="12" r="10"></circle>
                     <circle cx="12" cy="12" r="6"></circle>
                     <circle cx="12" cy="12" r="2"></circle></svg
-                  >Tous les mesures</a
+                  >Tous les mesures pour le capteur: {{ capteur.nom_capteur
+                  }}</a
                 >
               </li>
             </ul>
           </div>
-          <div class="col-md-6 p-0">
-            <div class="form-group mb-0 me-0"></div>
-            <a class="btn btn-primary" href="{% url 'adminCapteurCreate' %}">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="feather feather-plus-square"
-              >
-                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                <line x1="12" y1="8" x2="12" y2="16"></line>
-                <line x1="8" y1="12" x2="16" y2="12"></line></svg
-              >Ajouter une nouvelle mesure</a
-            >
-          </div>
+          <div class="col-md-6 p-0"></div>
         </div>
       </div>
     </div>
@@ -109,44 +90,23 @@
                 <thead>
                   <tr>
                     <th>#</th>
-                    <th>Image</th>
-                    <th>Nom</th>
-                    <th>Type</th>
-                    <th>Localisation</th>
-                    <th>Status</th>
-                    <th>Installation</th>
+                    <th>Temperature</th>
+                    <th>Moisisure</th>
+                    <th>Date Mesure</th>
                     <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {% for sensor in sensors %}
+                  {% for mesure in mesures %}
                   <tr>
                     <td>{{ forloop.counter }}</td>
-                    {% if sensor.image_capteur %}
-                    <td>
-                      <img
-                        src="{{ sensor.image_capteur.url }}"
-                        style="width: 50px; border-radius: 5px"
-                        alt="timg"
-                        srcset=""
-                      />
-                    </td>
-                    {% else %}
-                    <td>No image</td>
-                    {% endif %}
-                    <td>
-                      <a href="{% url 'adminCapteurEdit' sensor.pk %}"
-                        >{{ sensor.nom_capteur }}</a
-                      >
-                    </td>
-                    <td>{{ sensor.type_capteur }}</td>
-                    <td>{{ sensor.localisation }}</td>
-                    <td>{{ sensor.status |yesno:"Actif,Inactif" }}</td>
-                    <td>{{ sensor.date_installation }}</td>
+                    <td>{{ mesure.temperature }}</td>
+                    <td>{{ mesure.moisture }}</td>
+                    <td>{{ mesure.date_mesure }}</td>
                     <td>
                       <ul class="action">
                         <li class="delete">
-                          <a href="#" data-slug="{{ sensor.pk }}"
+                          <a href="#" data-slug="{{ mesure.id }}"
                             ><i class="icon-trash"></i
                           ></a>
                         </li>
@@ -164,7 +124,7 @@
                                     event.preventDefault();
 
                                     var url =
-                                      "{% url 'adminCapteurDelete' sensor.pk %}";
+                                      "{% url 'adminMesureDelete' mesure.id %}";
 
                                     Swal.fire({
                                       title: "Êtes vous sur?",

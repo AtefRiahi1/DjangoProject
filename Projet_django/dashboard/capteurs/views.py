@@ -193,3 +193,31 @@ def adminSensorDelete(request, id):
     capteur.delete()
     messages.warning(request, 'Capteur supprimé!')
     return redirect('adminCapteurList')
+
+
+# # # # # # # # # # # # # # # # # #
+    # Admin Mesure Element #
+# # # # # # # # # # # # # # # # # #
+@login_required(login_url='logIn')
+@admin_role_required
+def adminMesureList(request,capteur_id):
+    
+    capteur = get_object_or_404(Capteur, id=capteur_id)
+    mesures = capteur.mesures.all()
+    context = {
+        'title' : 'Mesures',
+        'mesures' : mesures,
+        'capteur': capteur
+    }
+    return render(request, 'dashboard/main/mesuresAdmin/list.html', context)
+
+
+@login_required(login_url='logIn')
+@admin_role_required
+def adminMesureDelete(request, mesure_id):
+    
+    mesure = get_object_or_404(Mesure, id=mesure_id)
+    capteur_id = mesure.capteur.id
+    mesure.delete()
+    messages.warning(request, 'Mesure supprimée!')
+    return redirect('adminMesureList', capteur_id=capteur_id)
