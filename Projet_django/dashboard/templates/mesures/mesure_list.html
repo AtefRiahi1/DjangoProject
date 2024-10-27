@@ -19,6 +19,15 @@
 
 <section class="container my-4">
   <h2>Liste des mesures de {{ capteur.nom_capteur }}</h2>
+  
+  {% if messages %}
+  {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+  {% endfor %}
+{% endif %} 
   <!-- Search Form -->
   <form method="get" class="mb-3">
     <div class="input-group">
@@ -38,6 +47,8 @@
   <table class="table table-bordered table-striped shadow ">
     <thead>
       <tr>
+        
+        <th>#</th>
         <th>Date</th>
         <th>Temperature du sol (°C)</th>
         <th>Moisisure du sol</th>
@@ -47,6 +58,8 @@
     <tbody>
       {% for mesure in mesures %}
       <tr>
+        
+        <td>{{ forloop.counter }}</td>
         <td>{{ mesure.date_mesure }}</td>
         <td>{{ mesure.temperature }}</td>
         <td>{{ mesure.moisture }}</td>

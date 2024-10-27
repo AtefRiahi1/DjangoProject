@@ -23,11 +23,13 @@
 
 
   <a href="{% url 'mesure_list' capteur.id %}" class="btn btn-secondary mb-3"
-    ><i class="bi bi-plus"></i>Retour vers mesures</a
+    ><i class="bi bi-arrow-left"></i>Retour vers mesures</a
   >
   <table class="table table-bordered table-striped shadow ">
     <thead>
       <tr>
+        
+        <th>#</th>
         <th>Date</th>
         <th>Temperature du sol (°C)</th>
         <th>Moisisure du sol</th>
@@ -37,10 +39,11 @@
     <tbody>
       {% for mesure in mesures %}
       <tr>
+        <td>{{ forloop.counter }}</td>
         <td>{{ mesure.date_mesure }}</td>
         <td>{{ mesure.temperature }}</td>
         <td>{{ mesure.moisture }}</td>
-        <td class={{mesure.should_irrigate|yesno:"bg-success text-white,bg-danger text-white"}}>{{ mesure.should_irrigate|yesno:"Oui,Non" }}</td>
+        <td class={{mesure.should_irrigate|yesno:"bg-success text-light,bg-danger text-light"}}>{{ mesure.should_irrigate|yesno:"Oui,Non" }}</td>
         
       </tr>
       {% empty %}

@@ -17,41 +17,59 @@
         </div>
     </div>
 </section>
-<section class="contact-area sec-mar"class="contact-area sec-mar">
+<section class="contact-area sec-mar">
+    
     <div class="text-left my-4 ms-4"> 
+  <h1>Liste des capteurs ({{ count }})</h1>
+    {% if request.user.is_authenticated and request.user.role == 'Admin' %}
         <a href="{% url 'sensor_create' %}" class="btn btn-success"><i class="bi bi-plus"></i>Ajouter un Capteur</a>
     </div>
+    {% endif %}
+    
+    {% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+  {% endif %} 
 <div class="container">
     <div class="row"> 
       {% for sensor in sensors %}
         <div class="col-md-4 mb-4"> 
             <div class="card text-center rounded border-2 shadow ">
                 <div class="card-body">
+                    <h5 class="card-title"><strong>Nom Capteur:</strong> {{ sensor.nom_capteur }}</h5>
                     {% if sensor.image_capteur %}
                     <img src="{{ sensor.image_capteur.url }}" class="img-fluid" alt="Image de {{ sensor.nom_capteur }}">
                 {% else %}
                     <p>Aucune image disponible pour ce capteur.</p>
                 {% endif %}
-                    <h5 class="card-title"><strong>Nom Capteur:</strong> {{ sensor.nom_capteur }}</h5>
                     <p class="card-text"><strong>Type Capteur:</strong> {{ sensor.type_capteur }}</p>
                     <p class="card-text"><strong>Localisation:</strong> {{ sensor.localisation }}</p>
                     <p class="card-text"><strong>Status:</strong> {{ sensor.status |yesno:"Actif,Inactif" }}</p>
                     <p class="card-text"><strong>Date installation:</strong> {{ sensor.date_installation }}</p>
+                    {% if request.user.is_authenticated %}
                     <div class="btn-group" role="group" aria-label="Actions">
+                        <a href="{% url 'mesure_list' sensor.pk %}" class="btn btn-success me-2" title="Mesures">
+                            <i class="fas fa-eye"></i> Mesures
+                        </a>
+                        {% if request.user.role == 'Admin' %}
                         <a href="{% url 'sensor_update' sensor.pk %}" class="btn btn-warning me-2" title="Modifier">
                             <i class="fas fa-edit"></i> Modifier
                         </a>
                         
-                        <a href="{% url 'mesure_list' sensor.pk %}" class="btn btn-success me-2" title="Mesures">
-                            <i class="fas fa-eye"></i> Mesures
-                        </a>
                         <form method="post" action="{% url 'sensor_delete' sensor.pk %}" style="display:inline;">
                             {% csrf_token %}
                             <button type="submit" class="btn btn-danger" title="Supprimer" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce capteur ?');">
                                 <i class="fas fa-trash-alt"></i>Supprimer
                             </button>
                         </form>
+                        {% endif %}
                     </div>
+
+                    {% endif %}
                     
                 </div>
             </div>

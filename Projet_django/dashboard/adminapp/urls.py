@@ -1,5 +1,6 @@
 from django.urls import path
 from adminapp.views import *
+from capteurs.views import *
 
 urlpatterns = [
     path('admin/dashboard', adminHome, name='adminHome'),
@@ -75,8 +76,8 @@ urlpatterns = [
     path('admin/pages/policy-page', AdminPolicyPage, name='AdminPolicyPage'),
 
 # Admin sensors URLS
-   # path('admin/capteurs', AdminCapteurList, name='adminCapteurList'),
-    #path('admin/capteurs/create', AdminCapteurCreate, name='adminCapteurCreate'),
-    #path('admin/capteurs/edit/<int:id>', AdminCapteurEdit, name='adminCapteurEdit'),
-    #path('admin/capteurs/delete/<int:id>', AdminCapteurDelete, name='adminCapteurDelete'),
+   path('admin/capteurs', adminSensorList, name='adminCapteurList'),
+    path('admin/capteurs/create', adminSensorCreate, name='adminCapteurCreate'),
+    path('admin/capteurs/edit/<int:id>', adminSensorEdit, name='adminCapteurEdit'),
+    path('admin/capteurs/delete/<int:id>', adminSensorDelete, name='adminCapteurDelete'),
 ]

@@ -202,6 +202,17 @@
                       <li><a href="{% url "AdminPolicyPage" %}">Policy Page</a></li>
                     </ul>
                   </li>
+                  <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#">
+                    <svg class="stroke-icon">
+                      <use href="{% static 'admin/assets/svg/icon-sprite.svg' %}#stroke-job-search"></use>
+                    </svg>
+                    <svg class="fill-icon">
+                      <use href="{% static 'admin/assets/svg/icon-sprite.svg' %}#fill-job-search"></use>
+                    </svg><span>Modules</span></a>
+                  <ul class="sidebar-submenu">
+                    <li><a href="{% url 'adminCapteurList' %}">Capteurs / Mesures</a></li>
+                  </ul>
+                </li>
 
                  <!-- <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#">
                     <svg class="stroke-icon">
@@ -238,7 +249,6 @@
                   <li><a href="{% url 'adminClientElementList' %}">Clients</a></li>
                   <li><a href="{% url 'adminTestimonialsElementList' %}">Testimonials</a></li>
                   <li><a href="{% url 'adminTeamElementList' %}">Team Members</a></li>
-                  <li><a href="{% url 'adminPricingElementList' %}">Pricing</a></li>
                 </ul>
               </li>
               <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#">
