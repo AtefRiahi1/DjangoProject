@@ -3,7 +3,8 @@ from .models import ZoneIrrigation
 from django.http import HttpResponseRedirect
 from .forms import ZoneIrrigationForm
 from django.contrib.auth.decorators import login_required
-from .services import predict_water_need
+from .services import WaterNeedsPredictor
+import os
 
 @login_required
 def zone_list(request):
@@ -51,28 +52,49 @@ def zone_delete(request, id):
     return render(request, 'zones_irrigation/zone_confirm_delete.html', {'zone': zone})
 
 
-
 def water_need_prediction(request):
-    # Récupérer les zones d'irrigation associées à l'utilisateur connecté
+    # Retrieve all zones associated with the logged-in user
     zones = ZoneIrrigation.objects.filter(user=request.user)
-    
-    if request.method == 'POST':  # Changez GET en POST pour permettre le téléchargement de l'image
-        zone_id = request.POST.get('zone_id')  # Récupérer l'ID de la zone sélectionnée
 
-        if zone_id:  # Vérifier si une zone a été sélectionnée
-            zone = get_object_or_404(ZoneIrrigation, id=zone_id)  # Récupérer l'objet ZoneIrrigation correspondant
-            image_zone = zone.image_zone  # Récupérer le chemin de l'image de la zone
+    # Initialize an error message variable
+    error_message = None
 
-            if image_zone:  # Vérifier si le fichier d'image existe
-                image_path = image_zone.path  # Utiliser le chemin de l'image enregistrée
-                
-                # Calcule le besoin en eau
-                besoin_eau = predict_water_need(image_path, zone.superficie)
-                print(f"Besoin en eau estimé : {besoin_eau} litres")
-                # Affiche les résultats dans la page de résultats
-                return render(request, 'zones_irrigation/water_need_prediction.html', {'besoin_eau': besoin_eau})
-            else:
-                return render(request, 'zones_irrigation/water_need_prediction.html', {'zones': zones, 'error': 'Image not provided'})
+    if request.method == 'POST':
+        # Get the selected zone ID from the POST request
+        zone_id = request.POST.get('zone_id')
+        zone = get_object_or_404(ZoneIrrigation, id=zone_id, user=request.user)
+        image_zone = zone.image_zone
 
-    # Si la méthode n'est pas POST ou s'il n'y a pas d'ID de zone, afficher le formulaire
-    return render(request, 'zones_irrigation/water_need_prediction.html', {'zones': zones})
+        # Check if the zone has an associated image
+        if not image_zone:
+            error_message = "Cette zone ne possède pas d'image."  # Error if no image
+        else:
+            image_path = image_zone.path
+            predictor = WaterNeedsPredictor()
+
+            try:
+                # Call the method to check if there are fruits or vegetables in the image
+                detected_items = predictor.is_fruit_or_vegetable(image_path)
+
+                if not detected_items:  # If no items are detected, set an error message
+                    error_message = "Aucun fruit ou légume détecté dans l'image."
+                else:
+                    # Attempt to predict the water needs based on the image and zone superficie
+                    predicted_label, besoin_eau = predictor.predict(image_path, zone.superficie)
+
+                    # Render the template with the prediction results and detected items
+                    return render(request, 'zones_irrigation/water_need_prediction.html', {
+                        'besoin_eau': besoin_eau,
+                        'predicted_label': predicted_label,
+                        'zones': zones
+                    })
+            except ValueError as ve:
+                error_message = f"Erreur lors de la prédiction : {ve}"
+            except Exception as e:
+                error_message = f"Erreur inattendue : {e}"
+
+    # Render the template with any errors encountered or the list of zones
+    return render(request, 'zones_irrigation/water_need_prediction.html', {
+        'zones': zones,
+        'error': error_message,  # Display error message if any
+    })

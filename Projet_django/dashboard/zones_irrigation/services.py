@@ -1,79 +1,130 @@
-from keras.models import load_model
-import numpy as np
-from tensorflow.keras.preprocessing.image import load_img, img_to_array
 import os
+import numpy as np
+from tensorflow.keras.models import load_model, Model
+from tensorflow.keras.preprocessing.image import load_img, img_to_array
+from tensorflow.keras.layers import Input, Conv2D, MaxPooling2D, Flatten, Dense
+from transformers import pipeline
 
-# Création du modèle avec l'API fonctionnelle
-from tensorflow.keras.models import Model
-from tensorflow.keras.layers import Dense, Flatten, Conv2D, MaxPooling2D, Input
+import os
+import numpy as np
+from tensorflow.keras.models import load_model, Model
+from tensorflow.keras.preprocessing.image import load_img, img_to_array
+from tensorflow.keras.layers import Input, Conv2D, MaxPooling2D, Flatten, Dense
+from transformers import AutoImageProcessor, AutoModelForImageClassification, pipeline
 
-# Input layer
-input_layer = Input(shape=(224, 224, 3))
+class WaterNeedsPredictor:
+    def __init__(self):
+        BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+        self.model_path = os.path.join(BASE_DIR, 'model.h5')
 
-# Convolutional layers
-x = Conv2D(32, (3, 3), activation='relu')(input_layer)
-x = MaxPooling2D(pool_size=(2, 2))(x)
-x = Conv2D(64, (3, 3), activation='relu')(x)
-x = MaxPooling2D(pool_size=(2, 2))(x)
+        # Chargement du modèle si le fichier existe
+        if os.path.isfile(self.model_path):
+            self.model = load_model(self.model_path)
+            print("Modèle chargé avec succès.")
+        else:
+            print("Erreur : Le modèle n'a pas été trouvé. Veuillez vérifier le chemin du modèle.")
+            self.model = None  # S'assurer que self.model est défini même si le fichier n'existe pas
 
-# Flatten the output
-x = Flatten()(x)
+        # Initialiser le modèle Hugging Face pour la classification d'images
+        self.image_classifier = pipeline("image-classification", model="jazzmacedo/fruits-and-vegetables-detector-36")
+        self.processor = AutoImageProcessor.from_pretrained("jazzmacedo/fruits-and-vegetables-detector-36")
+        self.model_auto = AutoModelForImageClassification.from_pretrained("jazzmacedo/fruits-and-vegetables-detector-36")
 
-# Dense layers
-x = Dense(128, activation='relu')(x)
+    def preprocess_image(self, image_path):
+        img = load_img(image_path, target_size=(224, 224))
+        img_array = img_to_array(img) / 255.0
+        return np.expand_dims(img_array, axis=0)
 
-# Outputs
-classification_output = Dense(1, activation='sigmoid', name='classification_output')(x)
-regression_output = Dense(1, activation='linear', name='regression_output')(x)
+    @staticmethod
+    def create_model():
+        input_layer = Input(shape=(224, 224, 3))
+        x = Conv2D(32, (3, 3), activation='relu')(input_layer)
+        x = MaxPooling2D(pool_size=(2, 2))(x)
+        x = Conv2D(64, (3, 3), activation='relu')(x)
+        x = MaxPooling2D(pool_size=(2, 2))(x)
+        x = Flatten()(x)
+        x = Dense(128, activation='relu')(x)
+        output_class = Dense(len(WaterNeedsPredictor.get_class_names()), activation='softmax')(x)
+        output_regression = Dense(1)(x)  # Pour la régression
+        
+        model = Model(inputs=input_layer, outputs=[output_class, output_regression])
+        model.compile(optimizer='adam', loss=['categorical_crossentropy', 'mse'], metrics=['accuracy'])
+        return model
 
-# Create the model
-model = Model(inputs=input_layer, outputs=[classification_output, regression_output])
+    @staticmethod
+    def get_class_names():
+        return [
+            "apple", "banana", "orange", "grape", "strawberry", "blueberry", 
+            "raspberry", "blackberry", "kiwi", "pineapple", "mango", "peach", 
+            "plum", "pear", "cherry", "apricot", "cantaloupe", "honeydew", "grapes",
+            "watermelon", "papaya", "pomegranate", "lime", "lemon", "coconut",
+            "fig", "date", "passionfruit", "tangerine", "nectarine", "persimmon",
+            "jackfruit", "dragonfruit", "custard apple", "starfruit", "guava",
+            "carrot", "beetroot", "tomato", "cucumber", "pepper", "onion", 
+            "garlic", "potato", "sweet potato", "spinach", "kale", "lettuce", 
+            "cabbage", "broccoli", "cauliflower", "zucchini", "eggplant", 
+            "radish", "asparagus", "artichoke", "celery", "mushroom", 
+            "turnip", "parsnip", "brussels sprouts", "green bean", "pea", 
+            "pumpkin", "squash", "bok choy", "arugula", "swiss chard"
+        ]
 
-# Compilation du modèle avec deux objectifs : binaire pour la classification, et erreur quadratique pour la régression
-model.compile(optimizer='adam', 
-              loss={'classification_output': 'binary_crossentropy', 'regression_output': 'mean_squared_error'}, 
-              metrics={'classification_output': 'accuracy'})
+    def classify_image(self, image_path, confidence_threshold=0.5):
+        classification_results = self.image_classifier(image_path)
+        labels_and_scores = [(result['label'], result['score']) for result in classification_results]
 
-# Exemple de données avec étiquettes supplémentaires pour la classification binaire
-y_class = np.random.randint(0, 2, size=(100,))  # 0 pour non-plante, 1 pour plante
-y_reg = np.random.rand(100)  # Besoin en eau
-X_train = np.random.rand(100, 224, 224, 3)  # 100 images 224x224 RGB
+        fruits_et_legumes = self.get_class_names()
+        detected_fruits_and_vegetables = [
+            (label, score) for label, score in labels_and_scores 
+            if label in fruits_et_legumes and score >= confidence_threshold
+        ]
 
-# Entraînement du modèle
-model.fit(X_train, {'classification_output': y_class, 'regression_output': y_reg}, epochs=5)
+        if detected_fruits_and_vegetables:
+            print(f"Type(s) détecté(s) avec score(s) : {detected_fruits_and_vegetables}")
+            return detected_fruits_and_vegetables
+        else:
+            print("Aucun fruit ou légume détecté.")
+            return []
 
-# Enregistrement du modèle
-model.save('SMAP_L4_SM_aup_20230121T000000_Vv7030_001.h5')
+    def is_fruit_or_vegetable(self, image_path):
+        resultats = self.classify_image(image_path)
 
-os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
+        if resultats:
+            print(f"Fruits ou légumes détectés: {resultats}")
+            return resultats  # Retourner les résultats détectés
+        else:
+            print("Aucun fruit ou légume détecté.")
+            return []
+    def predict(self, image_path, superficie):
+        if self.model is None:
+            raise ValueError("Le modèle n'est pas chargé. Assurez-vous que le fichier model.h5 existe.")
 
-# Chemin vers le répertoire de base du projet
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        # Step 1: Use `is_fruit_or_vegetable` to verify if a fruit or vegetable is detected in the image
+        fruits_or_vegetables = self.is_fruit_or_vegetable(image_path)
 
-# Spécifiez le chemin vers le modèle
-model_path = os.path.join(BASE_DIR, 'SMAP_L4_SM_aup_20230121T000000_Vv7030_001.h5')
+        # If no fruit or vegetable is detected, return None
+        if not fruits_or_vegetables:
+            print(f"Aucun fruit ou légume détecté dans l'image.")
+            return None, None
 
-# Vérifiez si le fichier existe
-if os.path.isfile(model_path):
-    model = load_model(model_path)
-else:
-    raise FileNotFoundError(f"Le fichier n'existe pas : {model_path}")
+        # Get the first detected result (fruit or vegetable label)
+        label, score = fruits_or_vegetables[0]
+        
+        # Find the class index based on the label (name of the detected fruit or vegetable)
+        class_index = self.get_class_names().index(label)
 
-def predict_water_need(image_path, superficie):
-    # Prétraiter l'image
-    img = load_img(image_path, target_size=(224, 224))  # Charger et redimensionner l'image
-    img_array = img_to_array(img) / 255.0  # Normaliser les pixels entre 0 et 1
-    img_array = np.expand_dims(img_array, axis=0)  # Ajouter une dimension pour le batch
+        # Step 2: Preprocess the image
+        img_data = self.preprocess_image(image_path)
 
-    # Obtenir les deux prédictions (classification et régression)
-    predictions = model.predict(img_array)
+        # Step 3: Make the prediction using the model
+        predictions = self.model.predict(img_data)  # Input the image data for prediction
 
-    # Les deux sorties sont dans un tableau
-    is_plant = predictions[0][0]  # Sortie de la classification
-    water_need = predictions[1][0] * superficie * 10 # Sortie de la régression pour le besoin en eau
+        # Get the water need prediction
+        water_need_prediction = predictions[1][0][0]  # Assuming the second output is for water needs
 
-    # Vérifier si l'image est une plante
-    if is_plant >= 0.5:  # Si le modèle prédit que c'est une plante
-        return f"Besoin en eau estimé : {water_need} litres"
-    else:
-        return "Ce n'est pas une plante"
+        # Return the detected label and calculated water need
+        print(f"Label: {label}, Water Need Prediction: {water_need_prediction}")
+        return label, water_need_prediction
+
+
+
+

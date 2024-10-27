@@ -16,31 +16,38 @@
     </div>
 </section>
 <div class="container"> 
-    <h1>Prédiction des Besoins en Eau</h1>
-
-    <form action="{% url 'water_need_prediction' %}" method="POST">
+    <!-- zones_irrigation/water_need_prediction.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Water Needs Prediction</title>
+</head>
+<body>
+    <h1>Prediction Result</h1>
+    {% if besoin_eau %}
+        <p>Besoin en eau estimé : {{ besoin_eau }} litres</p>
+    {% endif %}
+    {% if predicted_label %}
+        <p>Type d'image détecté : {{ predicted_label }}</p>
+    {% endif %}
+    {% if error %}
+        <p style="color:red;">{{ error }}</p>
+    {% endif %}
+    
+    <h2>Select an Irrigation Zone</h2>
+    <form method="post">
         {% csrf_token %}
-        
-        <label for="zone">Choisissez une zone d'irrigation :</label>
-        <select name="zone_id" id="zone" required>
-            <option value="">Sélectionnez une zone</option>
+        <select name="zone_id">
             {% for zone in zones %}
-                <option value="{{ zone.id }}">{{ zone.nom_zone }} - Superficie: {{ zone.superficie }}</option>
+                <option value="{{ zone.id }}">{{ zone.nom_zone }}</option>
             {% endfor %}
         </select>
-
-        <button type="submit">Prédire</button>
+        <button type="submit">Predict</button>
     </form>
+</body>
+</html>
 
-    {% if error %}
-        <div class="error">{{ error }}</div>
-    {% endif %}
-</div>
-<div class="container">
-    <h1>Résultat de la Prédiction</h1>
-    <p>Le besoin en eau estimé pour votre zone est : <strong>{{ besoin_eau }} litres</strong></p>
-    <a href="{% url 'zone_list' %}">Retourner au formulaire</a> <!-- Lien pour revenir au formulaire -->
-</div>
 
 
 {% endblock %}
