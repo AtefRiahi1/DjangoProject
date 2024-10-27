@@ -3,14 +3,8 @@ import numpy as np
 from tensorflow.keras.models import load_model, Model
 from tensorflow.keras.preprocessing.image import load_img, img_to_array
 from tensorflow.keras.layers import Input, Conv2D, MaxPooling2D, Flatten, Dense
-from transformers import pipeline
-
-import os
-import numpy as np
-from tensorflow.keras.models import load_model, Model
-from tensorflow.keras.preprocessing.image import load_img, img_to_array
-from tensorflow.keras.layers import Input, Conv2D, MaxPooling2D, Flatten, Dense
 from transformers import AutoImageProcessor, AutoModelForImageClassification, pipeline
+
 
 class WaterNeedsPredictor:
     def __init__(self):
@@ -68,7 +62,7 @@ class WaterNeedsPredictor:
             "pumpkin", "squash", "bok choy", "arugula", "swiss chard"
         ]
 
-    def classify_image(self, image_path, confidence_threshold=0.5):
+    def classify_image(self, image_path, confidence_threshold=0.9):
         classification_results = self.image_classifier(image_path)
         labels_and_scores = [(result['label'], result['score']) for result in classification_results]
 
@@ -119,7 +113,7 @@ class WaterNeedsPredictor:
         predictions = self.model.predict(img_data)  # Input the image data for prediction
 
         # Get the water need prediction
-        water_need_prediction = predictions[1][0][0]  # Assuming the second output is for water needs
+        water_need_prediction = predictions[1][0][0] * superficie  # Assuming the second output is for water needs
 
         # Return the detected label and calculated water need
         print(f"Label: {label}, Water Need Prediction: {water_need_prediction}")

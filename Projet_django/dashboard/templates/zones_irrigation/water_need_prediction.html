@@ -8,46 +8,84 @@
                 <div class="breadcrumb-wrapper">
                     <div class="breadcrumb-cnt">
                         <h1>Selectionner votre zone</h1>
-                        <span><a href="{% url "zone_list" %}">Zones d'Irrigation</a><i class="bi bi-arrow-right"></i>Prédiction</span>
+                        <span><a href="{% url 'zone_list' %}">Zones d'Irrigation</a><i class="bi bi-arrow-right"></i>Prédiction</span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
+
 <div class="container"> 
-    <!-- zones_irrigation/water_need_prediction.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Water Needs Prediction</title>
-</head>
-<body>
     <h1>Prediction Result</h1>
     {% if besoin_eau %}
-        <p>Besoin en eau estimé : {{ besoin_eau }} litres</p>
+        <p>Besoin en eau estimé : <strong>{{ besoin_eau }} litres</strong></p>
     {% endif %}
     {% if predicted_label %}
-        <p>Type d'image détecté : {{ predicted_label }}</p>
-    {% endif %}
-    {% if error %}
-        <p style="color:red;">{{ error }}</p>
+        <p>Type d'image détecté : <strong>{{ predicted_label }}</strong></p>
     {% endif %}
     
     <h2>Select an Irrigation Zone</h2>
     <form method="post">
         {% csrf_token %}
-        <select name="zone_id">
-            {% for zone in zones %}
-                <option value="{{ zone.id }}">{{ zone.nom_zone }}</option>
-            {% endfor %}
-        </select>
-        <button type="submit">Predict</button>
+        <div class="form-group">
+            <select name="zone_id" class="form-control">
+                {% for zone in zones %}
+                    <option value="{{ zone.id }}">{{ zone.nom_zone }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Predict</button>
     </form>
-</body>
-</html>
 
+    <!-- Modal for error messages -->
+    {% if error %}
+    <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="errorModalLabel">Erreur</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p style="color:red;">{{ error }}</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="close2 btn btn-secondary" data-dismiss="modal" aria-label="Close">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Include Bootstrap CSS -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<!-- Include jQuery and Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+<!-- JavaScript to show the error modal if there is an error -->
+<script>
+    $(document).ready(function() {
+        // Affiche la modale si une erreur est présente
+        {% if error %}
+            $('#errorModal').modal('show');
+        {% endif %}
+
+        // Gérer le clic sur le bouton de fermeture
+        $(document).on('click', '.close', function(event) {
+            event.preventDefault(); // Empêche le comportement par défaut
+            $('#errorModal').modal('hide'); // Ferme la modale
+        });
+        $(document).on('click', '.close2', function(event) {
+            event.preventDefault(); // Empêche le comportement par défaut
+            $('#errorModal').modal('hide'); // Ferme la modale
+        });
+    });
+</script>
 
 
 {% endblock %}
