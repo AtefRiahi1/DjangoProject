@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'custompage',
     'ckeditor',
     'consommationEau',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [

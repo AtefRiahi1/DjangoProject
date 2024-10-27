@@ -7,4 +7,5 @@ urlpatterns = [
     path('consommationeau/create', consommationEauCreate, name='consommationEauCreate'),
     path('consommationeau/edit/<int:id>', consommationEauEdit, name='consommationEauEdit'),
     path('consommationeau/delete/<int:id>', consommationEauDelete, name='consommationEauDelete'),
+    path('consommationeau/prediction_mensuelle', show_prediction, name='show_prediction'),
 ]
