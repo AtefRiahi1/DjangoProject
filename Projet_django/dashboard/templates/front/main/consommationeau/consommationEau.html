@@ -52,9 +52,12 @@
                         <h2>Consommation d'Eau</h2>
                     </div>
                 </div>
-                <div class="create-btn" style="text-align: right; margin-bottom: 20px;">
-                    <a href="{% url 'consommationEauCreate' %}" class="btn btn-primary">Ajouter une nouvelle consommation</a>
+                <div class="text-center my-4">
+                    <a href="{% url 'consommationEauCreate' %}"  class="btn btn-success">Ajouter une nouvelle consommation</a>
+               
+                    <a href="{% url 'show_prediction' %}" class="btn btn-success" >Voir la prédiction de consommation</a>
                 </div>
+            </div>
                 
                 <div class="row g-4">
                     {% for consommation in consommationEaus %}

@@ -88,6 +88,9 @@ def show_prediction(request):
     user = request.user
 
     model, model_columns = train_model(user)
+    seo = consommationEauPageSEO.objects.first()
+    testimonials = testimonialsSection.objects.all()
+
 
     user_data = ConsommationEau.objects.filter(user=user).values()
     user_df = pd.DataFrame(user_data)
@@ -118,9 +121,15 @@ def show_prediction(request):
 
             monthly_predictions.append(daily_prediction[0]) 
 
-        total_monthly_consumption = sum(monthly_predictions)
+        total_monthly_consumption = round(sum(monthly_predictions), 3)
+        context ={
+        'seo' : seo,
+        'predicted_consumption' : total_monthly_consumption,
+        'testimonials' : testimonials,
 
-        return render(request, 'front/main/consommationeau/prediction_mensuelle.html', {'predicted_consumption': total_monthly_consumption})
+    }
+
+        return render(request, 'front/main/consommationeau/prediction_mensuelle.html', context)
     else:
         return render(request, 'predictions/prediction.html', {'predicted_consumption': None})
 

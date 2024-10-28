@@ -1,11 +1,78 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Prévision de Consommation</title>
-</head>
-<body>
-    <h1>Prévision de Consommation d'Eau</h1>
-    <p>La consommation d'eau prévue à la fin du mois est de : {{ predicted_consumption }} L</p>
-</body>
-</html>
+{% extends 'front/base.html' %}
+{% load static %}
+{% block title %} Consommation Eau - {{ seo_settings.meta_title }} {% endblock title %}
+{% block title1 %} Consommation Eau - {{ seo_settings.meta_title }} {% endblock title1 %}
+{% block title2 %} Consommation Eau - {{ seo_settings.meta_title }} {% endblock title2 %}
+{% block content %}
+<style>
+   
+
+.container1 {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.title {
+    font-size: 2.5em;
+    color: #007BFF;
+    margin-bottom: 20px;
+}
+
+.prediction {
+    font-size: 1.5em;
+    color: #333;
+}
+
+.result {
+    font-size: 3em;
+    margin-top: 10px;
+    color: #28a745;
+}
+
+.amount {
+    font-weight: bold;
+}
+
+.unit {
+    font-size: 0.5em;
+    vertical-align: super;
+}
+
+</style>
+<main class="creasoft-wrap">
+    <div class="line_wrap">
+        <div class="line_item"></div>
+        <div class="line_item"></div>
+        <div class="line_item"></div>
+        <div class="line_item"></div>
+        <div class="line_item"></div>
+    </div>
+    <section class="breadcrumbs">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="breadcrumb-wrapper">
+                        <div class="breadcrumb-cnt">
+                            <h1>Consommation d'Eau</h1>
+                            <span><a href="{% url "homePageFront" %}">Home</a><i class="bi bi-arrow-right"></i>Prédiction</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <br>
+    <div class="container1">
+        <h1 class="title">Prévision de Consommation d'Eau</h1>
+        <p class="prediction">La consommation d'eau prévue à la fin du mois est de :</p>
+        <div class="result">
+            <span class="amount">{{ predicted_consumption }}</span>
+            <span class="unit">L</span>
+        </div>
+    </div>
+    {% endblock %}
