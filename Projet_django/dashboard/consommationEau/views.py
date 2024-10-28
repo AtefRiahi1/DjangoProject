@@ -137,6 +137,79 @@ def show_prediction(request):
         return render(request, 'front/main/consommationeau/prediction_mensuelle.html', context)
     else:
         return render(request, 'predictions/prediction.html', {'predicted_consumption': None})
+    
+@login_required(login_url='logIn')
+def irrigationFrontPage(request):
+    # Récupérer toutes les irrigations de l'utilisateur connecté
+    irrigations = Irrigation.objects.filter(user=request.user)
+    paginator = Paginator(irrigations, 6)  # Afficher 6 irrigations par page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'irrigations': irrigations,
+        'page_obj': page_obj,
+    }
+    return render(request, 'front/main/irrigation/irrigation_list.html', context)
+
+@login_required(login_url='logIn')
+def irrigationDetail(request, id):
+    # Récupérer l'irrigation spécifique
+    irrigation = get_object_or_404(Irrigation, id=id, user=request.user)
+    consommations = irrigation.get_consommations()
+    # Optionnel : récupérer les autres irrigations du même type (exclure celle de l'utilisateur si nécessaire)
+    similar_irrigations = Irrigation.objects.exclude(user=request.user).filter(type_irrigation=irrigation.type_irrigation)
+
+    context = {
+        'irrigation': irrigation,
+        'consommations': consommations,
+        'similar_irrigations': similar_irrigations,
+    }
+    return render(request, 'front/main/partial/irrigation-details.html', context)
+
+@login_required(login_url='logIn')
+def irrigationCreate(request):
+    if request.method == 'POST':
+        form = IrrigationForm(request.POST, request.FILES, user=request.user)  # Passer l'utilisateur ici
+        if form.is_valid():
+            irrigation = form.save(commit=True)  # Cela enregistrera l'irrigation et associera les consommations
+            messages.success(request, 'Irrigation created successfully!')
+            return redirect('irrigationFrontPage')
+    else:
+        form = IrrigationForm(user=request.user)  # Passer l'utilisateur ici aussi
+    
+    context = {
+        'title': 'Create Irrigation',
+        'form': form,
+    }
+    return render(request, 'front/main/irrigation/create.html', context)
+
+
+@login_required(login_url='logIn')
+def irrigationEdit(request, id):
+    irrigation = get_object_or_404(Irrigation, id=id, user=request.user)
+    if request.method == 'POST':
+        form = IrrigationForm(request.POST, request.FILES, instance=irrigation, user=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Irrigation updated successfully!')
+            return redirect('irrigationFrontPage')
+    else:
+        form = IrrigationForm(instance=irrigation, user=request.user)
+    
+    context = {
+        'title': 'Edit Irrigation',
+        'irrigation': irrigation,
+        'form': form,
+    }
+    return render(request, 'front/main/irrigation/edit.html', context)
+
+@login_required(login_url='logIn')
+def irrigationDelete(request, id):
+    irrigation = get_object_or_404(Irrigation, id=id, user=request.user)
+    irrigation.delete()
+    messages.warning(request, 'Irrigation deleted!')
+    return redirect('irrigationFrontPage')
 
 def error_404(request, exception):
     return render(request, 'error/404.html', status=404)

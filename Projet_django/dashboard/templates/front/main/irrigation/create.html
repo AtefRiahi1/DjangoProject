@@ -1,0 +1,135 @@
+{% extends 'front/base.html' %}
+{% load static %}
+{% block content %}
+<style>
+    label.switch {
+        margin-top: -35px;
+    }
+    @media only screen and (max-width: 600px) {
+        #ver-pills-tab {
+            display: -webkit-box;
+            margin-bottom: 18px;
+        }
+    }
+</style>
+<main class="creasoft-wrap">
+
+    <div class="line_wrap">
+        <div class="line_item"></div>
+        <div class="line_item"></div>
+        <div class="line_item"></div>
+        <div class="line_item"></div>
+        <div class="line_item"></div>
+    </div>
+
+    <section class="breadcrumbs">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="breadcrumb-wrapper">
+                        <div class="breadcrumb-cnt">
+                            <h1>Ajouter une Irrigation</h1>
+                            <span><a href="{% url "homePageFront" %}">Home</a><i class="bi bi-arrow-right"></i>Créer Irrigation</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-6">
+                    <h3>Créer Irrigation</h3>
+                </div>
+                <div class="col-6">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="{% url 'homePageFront' %}">
+                                <svg class="stroke-icon">
+                                    <use href="{% static 'admin/assets/svg/icon-sprite.svg' %}#stroke-home"></use>
+                                </svg>
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item">Irrigation</li>
+                        <li class="breadcrumb-item active">Créer Irrigation</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="row project-cards">
+            <div class="col-md-12 project-list">
+            </div>
+            <div class="container">
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form.media }}
+                    {% if form.errors %}
+                    <div class="alert alert-danger">
+                        <strong>Erreur :</strong>
+                        <ul>
+                            {% for field, errors in form.errors.items %}
+                            {% for error in errors %}
+                            <li>{{ field }}: {{ error }}</li>
+                            {% endfor %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <label for="{{ form.nom.id_for_label }}" class="form-label">Nom</label>
+                                    {{ form.nom }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <label for="{{ form.type_irrigation.id_for_label }}" class="form-label">Type d'Irrigation</label>
+                                    {{ form.type_irrigation }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
+                                    {{ form.description }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <label for="{{ form.consommations.id_for_label }}" class="form-label">Sélectionnez les Consommations</label>
+                                    {{ form.consommations }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary mb-3" type="submit">Enregistrer</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Container-fluid Ends-->
+{% endblock %}

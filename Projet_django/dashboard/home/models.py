@@ -2,7 +2,6 @@ from django.db import models
 from django.utils.text import slugify
 from ckeditor.fields import RichTextField
 from accounts.models import User
-
 # Sliders Model
 class sliderSection(models.Model):
     image = models.ImageField(upload_to='Home/', blank=True, null=True)
@@ -144,6 +143,27 @@ class homePageSEO(models.Model):
     def __str__(self):
         return self.meta_title
 
+class Irrigation(models.Model):
+    TYPE_IRRIGATION_CHOICES = [
+        ('Goutte à goutte', 'Goutte à goutte'),
+        ('Aspersion', 'Aspersion'),
+        ('Surface', 'Surface'),
+        ('Sous-irrigation', 'Sous-irrigation'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    nom = models.CharField(max_length=100)
+    type_irrigation = models.CharField(max_length=50, choices=TYPE_IRRIGATION_CHOICES)
+    description = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return f'Irrigation: {self.nom} ({self.type_irrigation})'
+    def get_consommations(self):
+        """Return all consommation associated with this irrigation."""
+        return self.consommations.all()
+    class Meta:
+        verbose_name_plural = "8.Irrigation Section"
+
 class ConsommationEau(models.Model):
     PHASES_CULTURE = [
         ('Germination', 'Germination'),
@@ -153,6 +173,7 @@ class ConsommationEau(models.Model):
     ]
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)  # Relation avec l'utilisateur
+    irrigation = models.ForeignKey(Irrigation, on_delete=models.CASCADE, related_name='consommations',null=True)
     id = models.AutoField(primary_key=True)
     date_heure = models.DateTimeField()
     quantite_consommee = models.FloatField()
