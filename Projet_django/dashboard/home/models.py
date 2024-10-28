@@ -173,7 +173,7 @@ class ConsommationEau(models.Model):
     ]
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)  # Relation avec l'utilisateur
-    irrigation = models.ForeignKey(Irrigation, on_delete=models.CASCADE, related_name='consommations',null=True)
+    irrigation = models.ForeignKey(Irrigation, on_delete=models.CASCADE, related_name='consommations',null=True, blank=True)
     id = models.AutoField(primary_key=True)
     date_heure = models.DateTimeField()
     quantite_consommee = models.FloatField()
