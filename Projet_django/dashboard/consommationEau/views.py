@@ -7,17 +7,22 @@ from django.contrib import messages
 import numpy as np
 import pandas as pd
 from consommationEau.train import train_model
+from django.core.paginator import Paginator
 
 @login_required(login_url='logIn')
 def consommationEauFrontPage(request):
     seo = consommationEauPageSEO.objects.first()
     consommationEaus = ConsommationEau.objects.filter(user=request.user)
     testimonials = testimonialsSection.objects.all()
+    paginator = Paginator(consommationEaus, 6)  # Show 6 zones per page
+    page_number = request.GET.get('page')  # Get the current page number from the query parameters
+    page_obj = paginator.get_page(page_number)
 
     context ={
         'seo' : seo,
         'consommationEaus' : consommationEaus,
         'testimonials' : testimonials,
+        'page_obj':page_obj,
 
     }
     return render(request, 'front/main/consommationeau/consommationEau.html', context)
