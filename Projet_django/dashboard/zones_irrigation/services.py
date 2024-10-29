@@ -113,7 +113,7 @@ class WaterNeedsPredictor:
         predictions = self.model.predict(img_data)  # Input the image data for prediction
 
         # Get the water need prediction
-        water_need_prediction = predictions[1][0][0] * superficie *10  # Assuming the second output is for water needs
+        water_need_prediction = round(predictions[1][0][0] * superficie * 10, 2)  # Assuming the second output is for water needs
 
         # Return the detected label and calculated water need
         print(f"Label: {label}, Water Need Prediction: {water_need_prediction}")
