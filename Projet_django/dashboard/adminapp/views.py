@@ -932,13 +932,28 @@ def generate_recommendation(crop_type, region, average_temperature, total_precip
         else:
             irrigation_level = "modérée"
 
-    # Générer la recommandation d'irrigation
     recommendation_text = (f"Puisque la température est {average_temperature}°C et que "
                            f"la précipitation est {'suffisante' if total_precipitation >= 100 else 'insuffisante'} "
                            f"({total_precipitation} mm), une irrigation {irrigation_level} est suggérée "
                            f"pour {crop_type} dans la région {region}.")
 
-    # Ajout de recommandations supplémentaires
+    additional_recommendations = []
+
+    if average_temperature > 35:
+        additional_recommendations.append("Il est conseillé de surveiller le stress hydrique sur les cultures.")
+    
+    if total_precipitation > 2000:
+        additional_recommendations.append("Des mesures doivent être prises pour éviter le ruissellement des eaux.")
+    
+    if crop_type.lower() in ['maïs', 'riz'] and total_precipitation < 800:
+        additional_recommendations.append("Considérez des pratiques de couverture pour conserver l'humidité du sol.")
+    
+    if region.lower() in ['sud', 'sahara'] and average_temperature > 40:
+        additional_recommendations.append("Pensez à des cultures adaptées aux climats arides.")
+
+    # Combiner les recommandations
+    if additional_recommendations:
+        recommendation_text += "\nRecommandations supplémentaires : " + " | ".join(additional_recommendations)
 
     # Enregistrement des résultats dans le fichier CSV
     record = {
