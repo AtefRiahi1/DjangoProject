@@ -1,0 +1,153 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block title %}{{ title }} - {{ seo_settings.meta_title }}{% endblock title %}
+
+{% block content %}
+<style>
+    /* Ajout de styles personnalisés */
+    .table-responsive {
+        overflow-x: auto;
+    }
+    .action li {
+        display: inline;
+        margin-right: 10px;
+    }
+    .action li a {
+        color: #007bff; /* Couleur des liens d'action */
+    }
+</style>
+
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-6">
+                    <h3>Recommandations</h3>
+                </div>
+                <div class="col-6">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="{% url 'adminHome' %}">
+                                <svg class="stroke-icon">
+                                    <use href="{% static 'admin/assets/svg/icon-sprite.svg' %}#stroke-home"></use>
+                                </svg>
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item active">Liste des recommandations</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12 project-list">
+            <div class="card">
+                <div class="row">
+                    <div class="col-md-6 p-0">
+                        <a class="btn btn-primary" href="{% url 'AdminRecommandationCreate' %}">Créer une nouvelle recommandation</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="display" id="basic-1">
+                                <thead>
+                                    <tr>
+                                        <th>Conseil</th>
+                                        <th>Date de recommandation</th>
+                                        <th>Type de culture</th>  <!-- Nouveau champ -->
+                                        <th>Région</th>  <!-- Nouveau champ -->
+                                        <th>Température moyenne</th>  <!-- Nouveau champ -->
+                                        <th>Précipitation totale</th>  <!-- Nouveau champ -->
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for recommandation in recommandations %}
+                                    <tr>
+                                        <td>{{ recommandation.conseil }}</td>
+                                        <td>{{ recommandation.date_recommandation }}</td>
+                                        <td>{{ recommandation.crop_type }}</td>  <!-- Affichage du Type de culture -->
+                                        <td>{{ recommandation.region }}</td>  <!-- Affichage de la Région -->
+                                        <td>{{ recommandation.average_temperature|default:"Non renseignée" }}</td>  <!-- Affichage de la Température moyenne -->
+                                        <td>{{ recommandation.total_precipitation }}</td>  <!-- Affichage de la Précipitation totale -->
+                                        <td>
+                                            <ul class="action">
+                                                <li class="edit">
+                                                    <a href="{% url 'AdminRecommandationEdit' recommandation.id %}" aria-label="Éditer cette recommandation">
+                                                        <i class="icon-pencil-alt"></i> Éditer
+                                                    </a>
+                                                </li>
+                                                <li class="delete">
+                                                    <a href="#" data-slug="{{ recommandation.id }}" aria-label="Supprimer cette recommandation">
+                                                        <i class="icon-trash"></i> Supprimer
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+        var deleteButtons = document.querySelectorAll('.delete a');
+
+        deleteButtons.forEach(function(button) {
+            button.addEventListener('click', function (event) {
+                event.preventDefault();
+
+                var recommandationId = this.getAttribute('data-slug'); // Récupère l'id
+
+                // Remplacez directement dans l'URL le 'PLACEHOLDER' par l'ID de la recommandation
+                var url = "{% url 'AdminRecommandationDelete' 0 %}".replace('0', recommandationId);
+
+                Swal.fire({
+                    title: 'Êtes-vous sûr ?',
+                    text: "Vous ne pourrez pas revenir en arrière !",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Oui, supprimer !'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Ajout du token CSRF pour sécuriser la requête
+                        fetch(url, {
+                            method: 'DELETE', // Utilisation de la méthode DELETE
+                            headers: {
+                                'X-CSRFToken': '{{ csrf_token }}', // Envoie du token CSRF
+                                'Content-Type': 'application/json'
+                            },
+                        }).then(response => {
+                            if (response.ok) {
+                                // Si la réponse est ok, redirigez vers la liste des recommandations
+                                window.location.href = "{% url 'AdminRecommandationList' %}";
+                            } else {
+                                Swal.fire(
+                                    'Erreur !',
+                                    'Une erreur est survenue lors de la suppression.',
+                                    'error'
+                                );
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    });
+</script>
+
+{% endblock %}

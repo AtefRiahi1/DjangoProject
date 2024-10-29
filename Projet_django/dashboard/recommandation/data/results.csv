@@ -1,0 +1,53 @@
+Region,Crop_Type,Average_Temperature_C,Total_Precipitation,recommendation
+Tunis,Coffe,18.0,100.0,"Puisque la température est 18.0°C et que la précipitation est suffisante (100.0 mm), une irrigation faible est suggérée pour Coffe dans la région Tunis."
+Sousse,blé,27.0,200.0,"Puisque la température est 27.0°C et que la précipitation est suffisante (200.0 mm), une irrigation faible est suggérée pour blé dans la région Sousse."
+Ariana,maïs,30.0,150.0,"Puisque la température est 30.0°C et que la précipitation est suffisante (150.0 mm), une irrigation faible est suggérée pour maïs dans la région Ariana."
+Ben Arous,tomate,25.0,120.0,"Puisque la température est 25.0°C et que la précipitation est suffisante (120.0 mm), une irrigation faible est suggérée pour tomate dans la région Ben Arous."
+Nabeul,poivron,28.0,200.0,"Puisque la température est 28.0°C et que la précipitation est suffisante (200.0 mm), une irrigation faible est suggérée pour poivron dans la région Nabeul."
+Zaghouan,haricot,22.0,50.0,"Puisque la température est 22.0°C et que la précipitation est insuffisante (50.0 mm), une irrigation élevée est suggérée pour haricot dans la région Zaghouan."
+Kairouan,patate,24.0,90.0,"Puisque la température est 24.0°C et que la précipitation est suffisante (90.0 mm), une irrigation faible est suggérée pour patate dans la région Kairouan."
+Bizerte,pois,21.0,150.0,"Puisque la température est 21.0°C et que la précipitation est suffisante (150.0 mm), une irrigation faible est suggérée pour pois dans la région Bizerte."
+Béja,carotte,23.0,70.0,"Puisque la température est 23.0°C et que la précipitation est insuffisante (70.0 mm), une irrigation élevée est suggérée pour carotte dans la région Béja."
+Jendouba,betterave,25.0,100.0,"Puisque la température est 25.0°C et que la précipitation est suffisante (100.0 mm), une irrigation faible est suggérée pour betterave dans la région Jendouba."
+Le Kef,pomme de terre,26.0,80.0,"Puisque la température est 26.0°C et que la précipitation est suffisante (80.0 mm), une irrigation faible est suggérée pour pomme de terre dans la région Le Kef."
+Siliana,ail,20.0,60.0,"Puisque la température est 20.0°C et que la précipitation est insuffisante (60.0 mm), une irrigation élevée est suggérée pour ail dans la région Siliana."
+Monastir,raisin,30.0,150.0,"Puisque la température est 30.0°C et que la précipitation est suffisante (150.0 mm), une irrigation faible est suggérée pour raisin dans la région Monastir."
+Mahdia,pêche,22.0,120.0,"Puisque la température est 22.0°C et que la précipitation est suffisante (120.0 mm), une irrigation faible est suggérée pour pêche dans la région Mahdia."
+Kasserine,olives,32.0,40.0,"Puisque la température est 32.0°C et que la précipitation est insuffisante (40.0 mm), une irrigation élevée est suggérée pour olives dans la région Kasserine."
+Sidi Bouzid,citrons,28.0,200.0,"Puisque la température est 28.0°C et que la précipitation est suffisante (200.0 mm), une irrigation faible est suggérée pour citrons dans la région Sidi Bouzid."
+Gabès,figues,26.0,70.0,"Puisque la température est 26.0°C et que la précipitation est insuffisante (70.0 mm), une irrigation élevée est suggérée pour figues dans la région Gabès."
+Médenine,dattes,34.0,50.0,"Puisque la température est 34.0°C et que la précipitation est insuffisante (50.0 mm), une irrigation élevée est suggérée pour dattes dans la région Médenine."
+Tataouine,menthe,24.0,30.0,"Puisque la température est 24.0°C et que la précipitation est insuffisante (30.0 mm), une irrigation élevée est suggérée pour menthe dans la région Tataouine."
+Tozeur,grenades,35.0,40.0,"Puisque la température est 35.0°C et que la précipitation est insuffisante (40.0 mm), une irrigation élevée est suggérée pour grenades dans la région Tozeur."
+Kebili,melon,36.0,20.0,"Puisque la température est 36.0°C et que la précipitation est insuffisante (20.0 mm), une irrigation élevée est suggérée pour melon dans la région Kebili."
+Manouba,melon,36.0,20.0,"Puisque la température est 36.0°C et que la précipitation est insuffisante (20.0 mm), une irrigation élevée est suggérée pour melon dans la région Manouba."
+Gafsa,raisin,30.0,150.0,"Puisque la température est 30.0°C et que la précipitation est suffisante (150.0 mm), une irrigation faible est suggérée pour raisin dans la région Gafsa."
+Sfax,citrons,28.0,200.0,"Puisque la température est 28.0°C et que la précipitation est suffisante (200.0 mm), une irrigation faible est suggérée pour citrons dans la région Sfax."
+tomate,Mahdia,25.0,200.0,"Puisque la température est 25.0°C et que la précipitation est suffisante (200.0 mm), une irrigation élevée est suggérée pour tomate dans la région Mahdia."
+tomate,Béja,12.0,20.0,"Puisque la température est 12.0°C et que la précipitation est insuffisante (20.0 mm), une irrigation élevée est suggérée pour tomate dans la région Béja."
+tomate,Béja,12.0,2000.0,"Puisque la température est 12.0°C et que la précipitation est suffisante (2000.0 mm), une irrigation élevée est suggérée pour tomate dans la région Béja."
+carotte,Béja,12.0,20.0,"Puisque la température est 12.0°C et que la précipitation est insuffisante (20.0 mm), une irrigation élevée est suggérée pour carotte dans la région Béja."
+carotte,Béja,28.0,20000.0,"Puisque la température est 28.0°C et que la précipitation est suffisante (20000.0 mm), une irrigation élevée est suggérée pour carotte dans la région Béja."
+carotte,Sousse,32.0,20000.0,"Puisque la température est 32.0°C et que la précipitation est suffisante (20000.0 mm), une irrigation élevée est suggérée pour carotte dans la région Sousse."
+tomate,Sousse,5.0,20000.0,"Puisque la température est 5.0°C et que la précipitation est suffisante (20000.0 mm), une irrigation faible est suggérée pour tomate dans la région Sousse."
+blé,Sousse,20.0,20.0,"Puisque la température est 20.0°C et que la précipitation est insuffisante (20.0 mm), une irrigation élevée est suggérée pour blé dans la région Sousse.
+Conseils supplémentaires : La meilleure période pour planter est le printemps, entre mars et avril. Assurez-vous d'appliquer un engrais riche en potassium pour de meilleurs rendements."
+maïs,Sousse,20.0,20.0,"Puisque la température est 20.0°C et que la précipitation est insuffisante (20.0 mm), une irrigation élevée est suggérée pour maïs dans la région Sousse.
+Recommandations supplémentaires : Considérez des pratiques de couverture pour conserver l'humidité du sol."
+poivron,Sousse,42.0,20.0,"Puisque la température est 42.0°C et que la précipitation est insuffisante (20.0 mm), une irrigation élevée est suggérée pour poivron dans la région Sousse.
+Recommandations supplémentaires : Il est conseillé de surveiller le stress hydrique sur les cultures."
+blé,Ben Arous,30.0,20000.0,"Puisque la température est 30.0°C et que la précipitation est suffisante (20000.0 mm), une irrigation faible est suggérée pour blé dans la région Ben Arous.
+Recommandations supplémentaires : Des mesures doivent être prises pour éviter le ruissellement des eaux."
+blé,Tozeur,1.0,201.0,"Puisque la température est 1.0°C et que la précipitation est suffisante (201.0 mm), une irrigation élevée est suggérée pour blé dans la région Tozeur."
+Coffe,Sousse,25.0,2000000.0,"Puisque la température est 25.0°C et que la précipitation est suffisante (2000000.0 mm), une irrigation faible est suggérée pour Coffe dans la région Sousse.
+Recommandations supplémentaires : Des mesures doivent être prises pour éviter le ruissellement des eaux."
+Coffe,Sfax,25.0,200002.0,"Puisque la température est 25.0°C et que la précipitation est suffisante (200002.0 mm), une irrigation faible est suggérée pour Coffe dans la région Sfax.
+Recommandations supplémentaires : Des mesures doivent être prises pour éviter le ruissellement des eaux."
+Mahdia,Aubergine,22.0,120.0,"Puisque la température est 22.0°C et que la précipitation est suffisante (120.0 mm), une irrigation faible est suggérée pour pêche dans la région Mahdia."
+Mahdia,Mangue,22.0,120.0,"Puisque la température est 22.0°C et que la précipitation est suffisante (120.0 mm), une irrigation faible est suggérée pour pêche dans la région Mahdia."
+Mangue,Sousse,36.0,2000.0,"Puisque la température est 36.0°C et que la précipitation est suffisante (2000.0 mm), une irrigation faible est suggérée pour Mangue dans la région Sousse.
+Recommandations supplémentaires : Il est conseillé de surveiller le stress hydrique sur les cultures."
+blé,Sousse,27.0,20.0,"Puisque la température est 27.0°C et que la précipitation est insuffisante (20.0 mm), une irrigation élevée est suggérée pour blé dans la région Sousse."
+blé,Sousse,41.0,2000000.0,"Puisque la température est 41.0°C et que la précipitation est suffisante (2000000.0 mm), une irrigation faible est suggérée pour blé dans la région Sousse."
+blé,Sousse,42.0,2000.0,"Puisque la température est 42.0°C et que la précipitation est suffisante (2000.0 mm), une irrigation faible est suggérée pour blé dans la région Sousse.
+Recommandations supplémentaires : Il est conseillé de surveiller le stress hydrique sur les cultures."

@@ -10,6 +10,8 @@ from django.views.static import serve
 
 urlpatterns = [
     path('oldadmin/', admin.site.urls),
+    path('recommandations/', include('recommandation.urls')),
+
     path('admin/' , RedirectView.as_view(pattern_name="adminHome"), name='adminRedirect'),
     path('dashboard/' , RedirectView.as_view(pattern_name="adminHome"), name='adminRedirect2'),
     path('', include('adminapp.urls')),
@@ -21,6 +23,14 @@ urlpatterns = [
     path('', include('marketing.urls')),
     path('', include('custompage.urls')),
     path('', include('zones_irrigation.urls')),
+
+
+
+
+
+
+
+
     path('sitemap.xml', generate_sitemap, name='generate_sitemap'),
 ]
 
