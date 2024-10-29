@@ -44,7 +44,7 @@ def zone_create(request):
 def zone_update(request, id):
     zone = get_object_or_404(ZoneIrrigation, id=id)
     if request.method == 'POST':
-        form = ZoneIrrigationForm(request.POST, instance=zone)
+        form = ZoneIrrigationForm(request.POST,request.FILES, instance=zone)
         if form.is_valid():
             form.save()
             return redirect('zone_detail', id=zone.id)
