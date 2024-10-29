@@ -27,6 +27,7 @@ from recommandation.models import Recommandation
 from recommandation.forms import  RecommandationForm
 from transformers import T5Tokenizer, T5ForConditionalGeneration
 import pandas as pd
+from accounts.models import *
 
 # # # # # # # # # # # # # # # # # #
         # Admin Home Page #
@@ -1065,5 +1066,71 @@ def error_404(request, exception):
 
 def error_500(request):
     return render(request, 'error/500.html', status=500)
+
+@login_required(login_url='logIn')
+@admin_role_required
+def adminConsommationEauList(request):
+    consommationEaus = ConsommationEau.objects.all()
+    context = {
+        'title' : 'Consommation Eau',
+        'consommationEaus' : consommationEaus,
+    }
+    return render(request, 'dashboard/main/consommationeau/consommationEaus.html', context)
+
+@login_required(login_url='logIn')
+@admin_role_required
+def adminConsommationEauCreate(request):
+    if request.method == 'POST':
+        form = ConsommationEauForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Save the form without committing to the database first
+            consommation_eau = form.save(commit=False)
+            # Save the object
+            consommation_eau.save()
+            messages.success(request, 'Water consumption created successfully!')
+            return redirect('adminConsommationEauList')
+    else:
+        form = ConsommationEauForm()
+    
+    context = {
+        'title' : 'Create Consommation Eau',
+        'form' : form,
+    }
+    return render(request, 'dashboard/main/consommationeau/create.html', context)
+
+
+@login_required(login_url='logIn')
+@admin_role_required
+def adminConsommationEauEdit(request, id):
+    consommationEau = get_object_or_404(ConsommationEau, id=id)
+    if request.method == 'POST':
+        form = ConsommationEauForm(request.POST, request.FILES, instance=consommationEau)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Water consumption updated successfully!')
+            return redirect('adminConsommationEauList')
+    else:
+        form = ConsommationEauForm(instance=consommationEau)
+    
+    context = {
+        'title': 'Edit Consommation Eau',
+        'consommationEau': consommationEau,
+        'form': form,
+    }
+    return render(request, 'dashboard/main/consommationeau/edit.html', context)
+
+
+@login_required(login_url='logIn')
+@admin_role_required
+def adminConsommationEauDelete(request, id):
+    consommationEau = get_object_or_404(ConsommationEau, id=id)
+    consommationEau.delete()
+    messages.warning(request, 'Water consumption deleted!')
+    return redirect('adminConsommationEauList')
+
+
+
+    
+        
 
 

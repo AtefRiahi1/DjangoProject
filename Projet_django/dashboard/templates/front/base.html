@@ -181,7 +181,16 @@
         <a href="{% url 'irrigation_schedule_list' %}">My Schedule</a>
     </li>
     {% endif %}
-  
+    {% if request.user.is_authenticated %}
+    <li class="has-child {% if request.path == '/' %}active{% endif %}">
+        <a href="{% url 'consommationEauFrontPage' %}">Consommation d'eau</a>
+    </li>
+    {% endif %}
+    {% if request.user.is_authenticated %}
+    <li class="has-child {% if request.path == '/' %}active{% endif %}">
+        <a href="{% url 'irrigationFrontPage' %}">Irrigation</a>
+    </li>
+    {% endif %}
     <li class="user-profile"> <!-- Ajoutez une classe ici pour le style -->
         {% if request.user.is_authenticated %}
             <div class="media profile-media">

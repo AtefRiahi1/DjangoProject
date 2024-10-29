@@ -54,6 +54,8 @@ INSTALLED_APPS = [
     'recommandation',
     'planification',
     'capteurs',
+    'consommationEau',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [

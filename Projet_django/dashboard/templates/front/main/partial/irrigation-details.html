@@ -1,0 +1,103 @@
+{% extends 'front/base.html' %}
+{% load static %}
+{% block title %} Détails de l'Irrigation - {{ seo_settings.meta_title }} {% endblock title %}
+{% block title1 %} Détails de l'Irrigation - {{ seo_settings.meta_title }} {% endblock title1 %}
+{% block title2 %} Détails de l'Irrigation - {{ seo_settings.meta_title }} {% endblock title2 %}
+{% block content %}
+
+<main class="creasoft-wrap">
+
+    <div class="line_wrap">
+        <div class="line_item"></div>
+        <div class="line_item"></div>
+        <div class="line_item"></div>
+        <div class="line_item"></div>
+        <div class="line_item"></div>
+    </div>
+
+    <section class="breadcrumbs">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="breadcrumb-wrapper">
+                        <div class="breadcrumb-cnt">
+                            <h1>Détails de l'Irrigation</h1>
+                            <span><a href="{% url 'homePageFront' %}">Home</a><i class="bi bi-arrow-right"></i>Irrigation<i class="bi bi-arrow-right"></i>{{ irrigation.nom }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="service-details sec-mar-top">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="service-details-content">
+                        <h3><i class="bi bi-droplet"></i> Détails de l'Irrigation</h3>
+                        <p><strong>Nom:</strong> {{ irrigation.nom }}</p>
+                        <p><strong>Type d'Irrigation:</strong> {{ irrigation.type_irrigation }}</p>
+                        <p><strong>Description:</strong> {{ irrigation.description }}</p>
+                        <h4>Consommations Associées</h4>
+<ul>
+    {% for consommation in consommations %}
+        <li>
+            <strong>Date et Heure:</strong> {{ consommation.date_heure }}<br>
+            <strong>Quantité Consommée:</strong> {{ consommation.quantite_consommee }} L<br>
+        </li>
+        {% empty %}
+            <li>Aucune consommation associée.</li>
+        {% endfor %}
+    </ul>
+                        <div class="btn-group" role="group" aria-label="Actions">
+                            <a href="{% url 'irrigationEdit' irrigation.id %}" class="btn btn-success" style="margin-right: 20px;">Modifier</a>
+                            <a href="#" class="btn btn-danger" id="delete-button">Supprimer</a>
+                            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                            <script>
+                                document.addEventListener('DOMContentLoaded', (event) => {
+                                    document.getElementById('delete-button').addEventListener('click', function(event) {
+                                        event.preventDefault();
+
+                                        var url = "{% url 'irrigationDelete' irrigation.id %}";
+
+                                        Swal.fire({
+                                            title: 'Êtes-vous sûr?',
+                                            text: "Vous ne pourrez pas revenir en arrière!",
+                                            icon: 'warning',
+                                            showCancelButton: true,
+                                            confirmButtonColor: '#3085d6',
+                                            cancelButtonColor: '#d33',
+                                            confirmButtonText: 'Oui, supprimez-le!'
+                                        }).then((result) => {
+                                            if (result.isConfirmed) {
+                                                window.location.href = url;
+                                            }
+                                        });
+                                    });
+                                });
+                            </script>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="sidebar-widget">
+                        <h4>Autres Irrigations</h4>
+                        <ul class="category">
+                            {% for irrigation_item in irrigations %}
+                            <li>
+                                <a href="{% url 'irrigationDetail' irrigation_item.id %}">
+                                    Irrigation: {{ irrigation_item.nom }}
+                                    <br> <strong>Type:</strong> {{ irrigation_item.type_irrigation }} 
+                                    <i class="bi bi-arrow-right"></i>
+                                </a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}

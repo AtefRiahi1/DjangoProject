@@ -97,4 +97,8 @@ urlpatterns = [
     path('admin/capteurs/<int:capteur_id>/mesures/',adminMesureList,name='adminMesureList'),
     path('admin/capteurs/mesures/<int:mesure_id>/delete/', adminMesureDelete, name='adminMesureDelete'),
     #path('admin/predict/<int:sensor_id>/', views.predict_irrigation, name='predict_irrigation'),
+    path('admin/consommationeaus', adminConsommationEauList, name='adminConsommationEauList'),
+    path('admin/consommationeau/create', adminConsommationEauCreate, name='adminConsommationEauCreate'),
+    path('admin/consommationeau/edit/<int:id>', adminConsommationEauEdit, name='adminConsommationEauEdit'),
+    path('admin/consommationeau/delete/<int:id>', adminConsommationEauDelete, name='adminConsommationEauDelete'),
 ]

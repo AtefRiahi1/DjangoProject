@@ -128,3 +128,20 @@ class homePageSEOForm(forms.ModelForm):
         # Add Bootstrap classes to form fields
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'   
+
+class ConsommationEauForm(forms.ModelForm):
+    class Meta:
+        model = ConsommationEau
+        fields = '__all__'
+        widgets = {
+            'date_heure': forms.DateTimeInput(attrs={
+                'class': 'form-control', 
+                'type': 'datetime-local'  # Utilise le type HTML5 pour le champ datetime
+            }),
+        }
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Add Bootstrap classes to form fields
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-control'  
