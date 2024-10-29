@@ -1,0 +1,152 @@
+{% extends 'front/base.html' %}
+{% load static %}
+{% block title %} {{seo.meta_title}} - {{seo.meta_description}} {% endblock title %}
+{% block title1 %} {{seo.meta_title}} - {{seo_settings.meta_title}} {% endblock title1 %}
+{% block title2 %} {{seo.meta_title}} - {{seo_settings.meta_title}} {% endblock title2 %}
+{% block content %}
+
+<style>
+    .premium-pricing h3 {
+        color: white;
+    }
+
+    .premium-pricing span {
+        color: white;
+    }
+
+    .premium-pricing strong {
+        color: white;
+    }
+
+    .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1050;
+        display: none; /* Hidden by default */
+    }
+
+    .forecast-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+    }
+
+    .forecast-table th, .forecast-table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: center;
+    }
+
+    .forecast-table th {
+        background-color: #f2f2f2;
+    }
+
+    .disabled {
+        background-color: #e9ecef; /* Light gray for disabled days */
+        color: #6c757d; /* Gray text */
+        text-decoration: line-through; /* Strikethrough text */
+    }
+
+    .best-day {
+        background-color: #28a745; /* Green for the best day */
+        color: white; /* White text */
+    }
+</style>
+
+<main class="creasoft-wrap">
+    <div class="line_wrap">
+        <div class="line_item"></div>
+        <div class="line_item"></div>
+        <div class="line_item"></div>
+        <div class="line_item"></div>
+        <div class="line_item"></div>
+    </div>
+
+    <section class="breadcrumbs">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="breadcrumb-wrapper">
+                        <div class="breadcrumb-cnt">
+                            <h1>5-Day Weather Forecast and Irrigation Suitability</h1>
+                            <span><a href="{% url 'homePageFront' %}">Home</a><i class="bi bi-arrow-right"></i>Forecast</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+   
+    {% if has_forecast_data %}
+        <h2>Location: {{ request.session.location }}</h2> <!-- Display the location here -->
+        <table class="forecast-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Avg Temp (°C)</th>
+                    <th>Avg Humidity (%)</th>
+                    <th>Max Wind Speed (m/s)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for date, row in forecast_df.iterrows %}
+                    <tr class="{% if best_day and date.date == best_day.date %}best-day{% else %}disabled{% endif %}">
+                        <td>{{ date.date }}</td>
+                        <td>{{ row.temperature|floatformat:2 }}°C</td>
+                        <td>{{ row.humidity|floatformat:2 }}%</td>
+                        <td>{{ row.wind_speed|floatformat:2 }} m/s</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% if best_day %}
+            <p>The best day to irrigate is: <strong>{{ best_day.date }}</strong></p>
+            <form action="{% url 'add_irrigation' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="date" value="{{ best_day.date }}">
+                <input type="hidden" name="location" value="{{ request.session.location }}">
+                <button type="submit" class="btn btn-success">Add Irrigation</button>
+            </form>        
+        
+            {% else %}
+            <section class="features-area">
+                <div class="container">
+                    <div class="title-wrap wow animate fadeInUp" data-wow-delay="200ms" data-wow-duration="1500ms">
+                        <div class="sec-title white">
+                            <span>Conditions d'Irrigation</span>
+                            <h2>Informations Importantes</h2>
+                        </div>
+                    </div>
+                    <div class="row g-4">
+                        <div class="col-md-12 wow animate fadeInUp" data-wow-delay="200ms" data-wow-duration="1500ms">
+                            <div class="single-feature">
+                                <div class="feature-inner">
+                                    <h4 style="color: white;">Les conditions pour l'irrigation ne sont pas optimales.</h4>
+                                    <p style="color: white;">Voici les conditions idéales qui n'ont pas été respectées :</p>
+                                    <ul style="color: white;">
+                                        <li>Température : Minimum 20°C et Maximum 26°C</li>
+                                        <li>Humidité : Minimum 45% et Maximum 70%</li>
+                                        <li>Vitesse du vent : Maximum 25 m/s</li>
+                                    </ul>
+                                    <p style="color: white;">Aucun jour dans les 5 prochains jours ne correspond à ces conditions de manière optimale.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            {% endif %}
+            
+    {% else %}
+        <p>No forecast data available.</p>
+    {% endif %}
+    <div class="button-group">
+         <!-- Adjust URL as necessary -->
+        <a href="{% url 'irrigation_plan_list' %}" class="btn btn-primary" style="margin-bottom: 10px; margin-top: 10px;">Back to List</a>
+        <a href="{% url 'location_form' %}" class="btn btn-secondary" style="margin-bottom: 10px; margin-top: 10px; margin-left: 10px;">Back to form</a>
+    </div>
+</main>
+
+{% endblock %}

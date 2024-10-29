@@ -1,0 +1,73 @@
+{% extends 'front/base.html' %}
+{% load static %}
+{% block title %}{{ seo.meta_title }} - Edit Irrigation Plan{% endblock title %}
+{% block title1 %}{{ seo.meta_title }} - Edit Irrigation Plan{% endblock title1 %}
+{% block title2 %}{{ seo.meta_title }} - Edit Irrigation Plan{% endblock title2 %}
+
+{% block content %}
+<main class="creasoft-wrap">
+
+    <div class="line_wrap">
+        <div class="line_item"></div>
+        <div class="line_item"></div>
+        <div class="line_item"></div>
+        <div class="line_item"></div>
+        <div class="line_item"></div>
+    </div>
+
+    <section class="breadcrumbs">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="breadcrumb-wrapper">
+                        <div class="breadcrumb-cnt">
+                            <h1>Edit Irrigation Plan</h1>
+                            <span><a href="{% url 'homePageFront' %}">Home</a><i class="bi bi-arrow-right"></i>Edit irrigation plan</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="getin-touch">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="contact-form wow animate fadeInUp" data-wow-delay="200ms"
+                     data-wow-duration="1500ms">
+                    <h3>Edit Your Irrigation Plan</h3>
+                    {% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+{% endif %}
+                    <form method="post" class="cntform" id="irrigation-plan-form">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-12">
+                                <input type="datetime-local" name="date_heure" 
+       value="{{ irrigation_plan.date_heure|date:'Y-m-d\\TH:i' }}" 
+       required 
+       min="{{ today|date:'Y-m-d' }}T00:00">
+
+                            </div>
+                            <div class="col-12">
+                                <input type="number" name="quantite_eau" step="0.1" value="{{ irrigation_plan.quantite_eau }}" required placeholder="Enter quantity of water (in liters)">
+                            </div>
+                            <div class="col-12">
+                                <input type="text" name="zone" value="{{ irrigation_plan.zone }}" required placeholder="Enter irrigation zone">
+                            </div>
+                            <div class="col-12">
+                                <input type="submit" class="contact-btn" value="Update Plan">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

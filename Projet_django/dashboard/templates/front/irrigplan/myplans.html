@@ -1,0 +1,186 @@
+{% extends 'front/base.html' %}
+{% load static %}
+{% block title %} {{seo.meta_title}} - {{seo.meta_description}} {% endblock title %}
+{% block title1 %} {{seo.meta_title}} - {{seo_settings.meta_title}} {% endblock title1 %}
+{% block title2 %} {{seo.meta_title}} - {{seo_settings.meta_title}} {% endblock title2 %}
+{% block content %}
+
+
+<style>
+    .premium-pricing h3 {
+        color: white;
+    }
+
+    .premium-pricing span {
+        color: white;
+    }
+
+    .premium-pricing strong {
+        color: white;
+    }
+
+    .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1050;
+        display: none; /* Hidden by default */
+    }
+</style>
+<main class="creasoft-wrap">
+
+    <div class="line_wrap">
+        <div class="line_item"></div>
+        <div class="line_item"></div>
+        <div class="line_item"></div>
+        <div class="line_item"></div>
+        <div class="line_item"></div>
+    </div>
+
+    <section class="breadcrumbs">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="breadcrumb-wrapper">
+                        <div class="breadcrumb-cnt">
+                            <h1>Irrigation Plan</h1>
+                            <span><a href="{% url 'homePageFront' %}">Home</a><i class="bi bi-arrow-right"></i>Plans</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+{% endif %}
+    {% if irrigation_plans %}
+    <section class="priceing-plan sec-mar">
+        <div class="container">
+            <div class="title-wrap">
+                <div class="sec-title">
+                    <span>Getting Started</span>
+                    <h2>My Irrigation Plans</h2>
+                </div>
+            </div>
+            <div id='calendar'></div>
+            <div class="tab-content" id="pills-tabContent">
+                <div class="tab-pane fade active show" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                    <div class="price-btn">
+                        <div class="line-1"></div>
+                        <div class="line-2"></div>
+                        <a href="{% url 'irrigation_plan_create' %}" class="btn btn-primary" style="margin-bottom: 10px;">Add Irrigation Plan</a>
+                        <a href="{% url 'location_form' %}" class="btn btn-secondary" style="margin-bottom: 10px; margin-left: 10px;">Generate Planifiaction</a>
+                        
+
+                    </div>
+                    <div class="notification alert alert-success" role="alert" id="locationNotification" style="display: none;">
+                        Location confirmed! Loading results...
+                    </div>
+                    <div class="row g-4">
+                        {% for plan in irrigation_plans %}
+                            <div class="col-md-6 col-lg-4 wow animate fadeInUp" data-wow-delay="200ms" data-wow-duration="1500ms">
+                                <div class="price-box">
+                                    <h3>{{ plan.zone }}</h3>
+                                    <span>{{ plan.date_heure|date:"F j, Y, g:i a" }}</span>
+                                    <strong>{{ plan.quantite_eau }} liters</strong>
+                                    <div class="item-list">
+                                        <p>Irrigation Plan Details:</p>
+                                        <ul>
+                                            <li>Zone: {{ plan.zone }}</li>
+                                            <li>Date & Time: {{ plan.date_heure|date:"F j, Y, g:i a" }}</li>
+                                            <li>Quantity of Water: {{ plan.quantite_eau }} liters</li>
+                                        </ul>
+                                    </div>
+                                    <div class="price-btn">
+                                        <div class="line-1"></div>
+                                        <div class="line-2"></div>
+                                        <a href="{% url 'irrigation_plan_update' plan.id %}" class="btn btn-success edit-btn" data-id="{{ plan.id }}">
+                                            Edit
+                                        </a>
+                                        <button class="btn btn-danger delete-btn" data-id="{{ plan.id }}">
+                                            Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% else %}
+        <section class="priceing-plan sec-mar">
+            <div class="container">
+                <div class="title-wrap">
+                    <div class="sec-title">
+                        <span>Getting Started</span>
+                        <h2>My Irrigation Plans</h2>
+                    </div>
+                </div>
+                <div class="row g-4">
+                    <div class="col-12 wow animate fadeInUp" data-wow-delay="200ms" data-wow-duration="1500ms">
+                        <div class="price-box">
+                            <h3>No Plans Yet</h3>
+                            <p>You don't have any irrigation plans at the moment. Click the button below to add a new plan.</p>
+                            <div class="price-btn">
+                                <div class="line-1"></div>
+                                <div class="line-2"></div>
+                                <a href="{% url 'irrigation_plan_create' %}" class="btn btn-primary">Add Irrigation Plan</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    {% endif %}
+
+    <!-- Notification Area -->
+    <div class="notification alert alert-success" role="alert" id="deleteNotification">
+        Irrigation plan deleted successfully!
+    </div>
+
+    <script>
+        // JavaScript to handle delete confirmation and notification
+        let planIdToDelete = null;
+
+        document.querySelectorAll('.delete-btn').forEach(button => {
+            button.addEventListener('click', function(event) {
+                event.preventDefault();
+                planIdToDelete = this.getAttribute('data-id');
+
+                // Confirm deletion
+                if (confirm("Are you sure you want to delete this irrigation plan? This action cannot be undone.")) {
+                    fetch(`/deleteplan/${planIdToDelete}/`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': '{{ csrf_token }}',
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({'id': planIdToDelete})
+                    })
+                    .then(response => {
+                        if (response.ok) {
+
+                            const notification = document.getElementById('deleteNotification');
+                            notification.style.display = 'block'; 
+                            setTimeout(() => {
+                                notification.style.display = 'none';
+                            }, 3000);
+                            window.location.reload(); 
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+                }
+            });
+        });
+      
+    </script>
+</main>
+{% endblock %}
