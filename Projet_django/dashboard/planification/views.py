@@ -13,7 +13,8 @@ from tensorflow.keras.layers import LSTM, Dense
 from sklearn.preprocessing import StandardScaler
 from tensorflow.keras.losses import MeanSquaredError
 import os
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
+from django.utils import timezone
 import logging
 
 logger = logging.getLogger(__name__)
@@ -31,6 +32,7 @@ def irrigation_plan_list(request):
 # Create a new irrigation schedule
 @login_required  
 def irrigation_plan_create(request):
+    today = timezone.now()
     if request.method == 'POST':
         form = IrrigationPlanForm(request.POST)  
         if form.is_valid():
@@ -41,11 +43,12 @@ def irrigation_plan_create(request):
             return redirect('irrigation_plan_list') 
     else:
         form = IrrigationPlanForm()  
-    return render(request, 'front/irrigplan/createplan.html', {'form': form}) 
+    return render(request, 'front/irrigplan/createplan.html', {'form': form, 'today': today}) 
 
 # Update an existing irrigation schedule
 @login_required
 def irrigation_plan_update(request, pk):
+    today = timezone.now()
     irrigation_plan = get_object_or_404(IrrigationPlan, pk=pk)
     if request.method == 'POST':
         form = IrrigationPlanForm(request.POST, instance=irrigation_plan)
@@ -56,7 +59,7 @@ def irrigation_plan_update(request, pk):
     else:
         form = IrrigationPlanForm(instance=irrigation_plan)
     
-    return render(request, 'front/irrigplan/editplan.html', {'form': form, 'irrigation_plan': irrigation_plan})
+    return render(request, 'front/irrigplan/editplan.html', {'form': form, 'irrigation_plan': irrigation_plan,'today': today})
 
 # Delete an irrigation schedule
 @login_required  
@@ -87,6 +90,7 @@ def irrigation_schedule_list(request):
     return render(request, 'front/irrigplan/myschedule.html', {'irrigation_schedules': irrigation_schedules})
 
 def add_irrigation_schedule(request):
+    today = timezone.now()
     if request.method == 'POST':
         form = IrrigationScheduleForm(request.POST)
         if form.is_valid():
@@ -98,13 +102,11 @@ def add_irrigation_schedule(request):
     else:
         form = IrrigationScheduleForm()
     
-    return render(request, 'front/irrigplan/addschedule.html', {'form': form})
+    return render(request, 'front/irrigplan/addschedule.html', {'form': form,'today': today})
 
 @login_required
 def irrigation_schedule_update(request, pk):
     irrigation_schedule = get_object_or_404(IrrigationSchedule, pk=pk, user=request.user)
-
-    # Fetching all irrigation plans for the current user
     irrigation_plans = IrrigationPlan.objects.filter(user=request.user)
 
     if request.method == 'POST':
@@ -128,11 +130,10 @@ def irrigation_schedule_update(request, pk):
             messages.success(request, 'Irrigation schedule updated successfully!')
             return redirect('irrigation_schedule_list')
         else:
-            print("Form is invalid:", form.errors)  # Debugging statement
+            print("Form is invalid:", form.errors) 
 
     else:
         form = IrrigationScheduleForm(instance=irrigation_schedule, schedule_instance=irrigation_schedule)
-
     return render(request, 'front/irrigplan/editschedule.html', {
         'form': form,
         'irrigation_schedule': irrigation_schedule,
@@ -155,7 +156,6 @@ def get_current_weather(location):
     
     response = requests.get(f"{BASE_GEOCODE_URL}?q={location}&key={GEOCODE_API_KEY}")
     data = response.json()
-
     if response.status_code != 200 or not data['results']:
         print("Location not found.")
         return None
@@ -309,20 +309,16 @@ def results_view(request):
     best_day_str = request.session.get('best_day')
     forecast_data = request.session.get('forecast_data')
     location = request.session.get('location') 
-
     if forecast_data:
         forecast_df = pd.read_json(forecast_data)
-   
         forecast_df.index = pd.to_datetime(forecast_df.index)
         daily_forecast = forecast_df.resample('D').mean()
- 
         next_five_days = daily_forecast.head(5)
         
     else:
         next_five_days = None
 
     has_forecast_data = next_five_days is not None and not next_five_days.empty
-
     best_day = datetime.fromisoformat(best_day_str) if best_day_str else None
 
     return render(request, 'front/irrigplan/results.html', {
@@ -337,26 +333,18 @@ def add_irrigation(request):
     if request.method == 'POST':
         date_str = request.POST.get('date')
         location = request.POST.get('location')
-
-        # Parse the date string to a datetime object using the correct format
         try:
-            date_heure = datetime.strptime(date_str, "%b. %d, %Y")  # Match the incoming format
+            date_heure = datetime.strptime(date_str, "%b. %d, %Y")
         except ValueError:
-            # Handle the error if the date is not in the expected format
             messages.error(request, 'Invalid date format. Please use "Oct. 26, 2024".')
             return redirect('irrigation_plan_list')
 
-        # Create an IrrigationPlan object
         irrigation_plan = IrrigationPlan(
             user=request.user,
             date_heure=date_heure,
-            quantite_eau=60.0,  # Default quantity
+            quantite_eau=60.0,  
             zone=location
         )
         irrigation_plan.save()
-
-        # Redirect to the forecast page or wherever you want
         return redirect('irrigation_plan_list')
-    
-    # Optionally, you can handle the GET request or redirect if needed
     return redirect('irrigation_plan_list')

@@ -52,7 +52,7 @@
 </style>
 <div id="loading-overlay" style="display:none;">
     <div class="loading-content">
-        <h2>Processing Your Request...</h2>
+        <h2>Processing weather data...</h2>
         <p>Please wait while we gather the information.</p>
         <div class="spinner"></div>
     </div>
@@ -90,8 +90,8 @@
     </div>
 {% endif %}
     <div class="getin-touch">
-        <div class="row justify-content-center">  <!-- Centering the row -->
-            <div class="col-md-8">  <!-- Adjusted column size for better centering -->
+        <div class="row justify-content-center">  
+            <div class="col-md-8">  
                 <div class="contact-form wow animate fadeInUp" data-wow-delay="200ms"
                      data-wow-duration="1500ms">
                     <h3>Add Your Location</h3>
@@ -114,11 +114,11 @@
 </main>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const form = document.querySelector('form'); // Select the form element
+        const form = document.querySelector('form'); 
         const loadingOverlay = document.getElementById('loading-overlay');
 
         form.addEventListener('submit', function() {
-            loadingOverlay.style.display = 'flex'; // Show the loading overlay
+            loadingOverlay.style.display = 'flex'; 
         });
     });
 </script>

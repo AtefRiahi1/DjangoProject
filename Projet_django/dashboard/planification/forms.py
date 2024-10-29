@@ -11,7 +11,7 @@ class LocationForm(forms.Form):
 
 class IrrigationScheduleForm(forms.ModelForm):
     irrigation_plans = forms.ModelMultipleChoiceField(
-        queryset=IrrigationPlan.objects.none(),  # Start with no queryset
+        queryset=IrrigationPlan.objects.none(), 
         widget=forms.CheckboxSelectMultiple,
         required=False
     )
@@ -26,4 +26,4 @@ class IrrigationScheduleForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         if schedule_instance:
             self.fields['irrigation_plans'].queryset = IrrigationPlan.objects.filter(user=schedule_instance.user)
-            self.fields['irrigation_plans'].initial = schedule_instance.plans.all() # Set selected plans
+            self.fields['irrigation_plans'].initial = schedule_instance.plans.all()
