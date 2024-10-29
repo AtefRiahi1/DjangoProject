@@ -1,0 +1,138 @@
+{% extends 'front/base.html' %}
+{% load static %}
+{% block title %}{{ seo.meta_title }} - {{ seo.meta_description }}{% endblock title %}
+{% block title1 %}{{ seo.meta_title }} - {{ seo_settings.meta_title }}{% endblock title1 %}
+{% block title2 %}{{ seo.meta_title }} - {{ seo_settings.meta_title }}{% endblock title2 %}
+{% block content %}
+
+<style>
+    .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1050;
+        display: none; /* Hidden by default */
+    }
+</style>
+
+<main class="creasoft-wrap">
+
+    <section class="breadcrumbs">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="breadcrumb-wrapper">
+                        <div class="breadcrumb-cnt">
+                            <h1>Irrigation Schedules</h1>
+                            <span><a href="{% url 'homePageFront' %}">Home</a><i class="bi bi-arrow-right"></i>Schedules</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <section class="priceing-plan sec-mar">
+        <div class="container">
+            <div class="title-wrap">
+                <div class="sec-title">
+                    <span>Getting Started</span>
+                    <h2>My Irrigation Schedules</h2>
+                </div>
+            </div>
+
+            <div class="price-btn">
+                <a href="{% url 'irrigation_schedule_create' %}" class="btn btn-primary" style="margin-bottom: 10px;">Add Irrigation Schedule</a>
+            </div>
+
+            <div class="row g-4">
+                {% if irrigation_schedules %}
+                    {% for schedule in irrigation_schedules %}
+                    <div class="col-md-6 col-lg-4 wow animate fadeInUp" data-wow-delay="200ms" data-wow-duration="1500ms">
+                        <div class="price-box">
+                            <h3>{{ schedule.start_time|date:"F j, Y" }} - {{ schedule.end_time|date:"F j, Y" }}</h3>
+                            <div class="item-list">
+                                <p>Irrigation Plans:</p>
+                                <ul>
+                                    {% for plan in schedule.plans.all %}
+                                        <li>{{ plan.date_heure|date:"F j, Y" }} - {{ plan.quantite_eau }} liters in {{ plan.zone }}</li>
+                                    {% empty %}
+                                        <li>No plans for this schedule.</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            <div class="price-btn">
+                                <a href="{% url 'irrigation_schedule_update' schedule.id %}" class="btn btn-success edit-btn" data-id="{{ schedule.id }}">
+                                    Add irrigation plans
+                                </a>
+                                <button class="btn btn-danger delete-btn" data-id="{{ schedule.id }}">
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="col-12 wow animate fadeInUp" data-wow-delay="200ms" data-wow-duration="1500ms">
+                        <div class="price-box">
+                            <h3>No Schedules Yet</h3>
+                            <p>You don't have any irrigation schedules at the moment. Click the button below to add a new schedule.</p>
+                            <div class="price-btn">
+                                <a href="{% url 'irrigation_schedule_create' %}" class="btn btn-primary">Add Irrigation Schedule</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>            
+        </div>
+    </section>
+
+    <div class="notification alert alert-success" role="alert" id="deleteNotification">
+        Irrigation schedule deleted successfully!
+    </div>
+
+    <script>
+
+        let scheduleIdToDelete = null;
+
+        document.querySelectorAll('.delete-btn').forEach(button => {
+            button.addEventListener('click', function(event) {
+                event.preventDefault();
+                scheduleIdToDelete = this.getAttribute('data-id');
+
+                if (confirm("Are you sure you want to delete this irrigation schedule? This action cannot be undone.")) {
+                    fetch(`/schedules/delete/${scheduleIdToDelete}/`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': '{{ csrf_token }}',
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({'id': scheduleIdToDelete})
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            const notification = document.getElementById('deleteNotification');
+                            notification.style.display = 'block'; 
+                            setTimeout(() => {
+                                notification.style.display = 'none';
+                            }, 3000);
+                            window.location.reload(); 
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+                }
+            });
+        });
+    </script>
+
+</main>
+{% endblock %}
