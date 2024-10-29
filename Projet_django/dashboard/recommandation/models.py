@@ -28,15 +28,15 @@ class Feedback(models.Model):
         (DISLIKE, 'Dislike'),
     ]
 
-    recommandation = models.ForeignKey(Recommandation, on_delete=models.CASCADE)  # Lier le feedback à une recommandation
-    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Lier le feedback à un utilisateur
-    feedback_type = models.CharField(max_length=10, choices=FEEDBACK_CHOICES, default=LIKE)
-    created_at = models.DateTimeField(auto_now_add=True)  # Date de création du feedback
+    recommandation = models.ForeignKey(Recommandation, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    feedback_type = models.CharField(max_length=10, choices=FEEDBACK_CHOICES, null=True, blank=True)  # Rendre nullable
+    created_at = models.DateTimeField(auto_now_add=True)
+    comment = models.TextField(blank=True, null=True)
 
     class Meta:
         verbose_name = "Feedback"
         verbose_name_plural = "Feedbacks"
-        unique_together = ('recommandation', 'user')  # Un utilisateur peut "liker" ou "disliker" une recommandation une seule fois
 
     def __str__(self):
-        return f"{self.user.username} a {self.get_feedback_type_display()} la recommandation '{self.recommandation.conseil}'"
+        return f"{self.user.username} a {self.get_feedback_type_display() if self.feedback_type else 'laissé un commentaire'} sur la recommandation '{self.recommandation.conseil}'"

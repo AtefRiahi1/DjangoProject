@@ -1,9 +1,11 @@
+import logging
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 
 from recommandation.forms import FeedbackForm
 from .models import Feedback, Recommandation
+logger = logging.getLogger(__name__)
 
 def recommandation_list(request):
     # Récupérer toutes les recommandations existantes dans la base de données
@@ -23,9 +25,10 @@ from .models import Recommandation, Feedback
 from .forms import FeedbackForm
 
 @login_required
+@login_required
 def detail_recommandation(request, recommandation_id):
     recommandation = get_object_or_404(Recommandation, id=recommandation_id)
-    feedbacks = Feedback.objects.filter(recommandation=recommandation)
+    feedbacks = Feedback.objects.filter(recommandation=recommandation)  # Récupérer tous les feedbacks
 
     # Compter le nombre total de feedbacks
     total_feedbacks = feedbacks.count()
@@ -38,41 +41,81 @@ def detail_recommandation(request, recommandation_id):
 
     return render(request, 'recommandation/detail_recommandation.html', {
         'recommandation': recommandation,
-        'feedbacks': feedbacks,
+        'feedbacks': feedbacks,  # Passer les feedbacks au template
         'total_feedbacks': total_feedbacks,
         'recommandations_personnalisees': recommandations_personnalisees,
     })
 
+# views.py
 @login_required
+
 def submit_feedback(request, recommandation_id):
-    # Récupérer la recommandation
     recommandation = get_object_or_404(Recommandation, id=recommandation_id)
 
     if request.method == 'POST':
-        form = FeedbackForm(request.POST)
+        feedback_type = request.POST.get('feedback_type')  # Peut être None
+        comment = request.POST.get('comment')  # Commentaire
 
-        if form.is_valid():
-            # Vérifier si l'utilisateur a déjà soumis un feedback pour cette recommandation
-            if Feedback.objects.filter(recommandation=recommandation, user=request.user).exists():
-                messages.error(request, "Vous avez déjà donné votre avis sur cette recommandation.")
-            else:
-                # Créer un nouvel objet Feedback
-                feedback = form.save(commit=False)
-                feedback.recommandation = recommandation
-                feedback.user = request.user
-                feedback.save()
-                messages.success(request, "Votre avis a été soumis avec succès.")
+        # Vérifiez si l'utilisateur a déjà soumis un feedback de ce type
+        existing_feedback = Feedback.objects.filter(
+            recommandation=recommandation,
+            user=request.user,
+            feedback_type=feedback_type  # Peut être None
+        ).first()
+
+        if existing_feedback:
+            messages.error(request, f"Vous avez déjà donné un avis '{feedback_type}' pour cette recommandation.")
         else:
-            # Affichage des erreurs de validation
-            for field, errors in form.errors.items():
-                for error in errors:
-                    messages.error(request, f"Erreur dans le champ {field}: {error}")
+            # Créez un nouveau feedback
+            feedback = Feedback(
+                recommandation=recommandation,
+                user=request.user,
+                feedback_type=feedback_type,  # Peut être None ou une valeur valide
+                comment=comment or ''  # Le commentaire peut être vide
+            )
+            feedback.save()
+            messages.success(request, "Votre avis a été soumis avec succès.")
 
-        # Rediriger vers la page de détails de la recommandation
         return redirect('detail_recommandation', recommandation_id=recommandation.id)
 
-    # En cas de non-POST, redirigez simplement vers la page de détails
     return redirect('detail_recommandation', recommandation_id=recommandation.id)
+
+
+@login_required
+def delete_feedback(request, feedback_id):
+    feedback = get_object_or_404(Feedback, id=feedback_id)
+
+    if request.user == feedback.user:
+        feedback.delete()
+        messages.success(request, "Commentaire supprimé avec succès !")
+    else:
+        messages.error(request, "Vous n'êtes pas autorisé à supprimer ce commentaire.")
+
+    # Redirigez l'utilisateur vers la page de détails de la recommandation
+    return redirect('detail_recommandation', recommandation_id=feedback.recommandation.id)
+
+
+
+@login_required
+def update_feedback(request, feedback_id):
+    feedback = get_object_or_404(Feedback, id=feedback_id)
+
+    # Vérifiez que l'utilisateur est l'auteur du commentaire
+    if request.user != feedback.user:
+        messages.error(request, "Vous n'êtes pas autorisé à modifier ce commentaire.")
+        return redirect('detail_recommandation', recommandation_id=feedback.recommandation.id)
+
+    if request.method == 'POST':
+        # Récupérez le nouveau commentaire
+        new_comment = request.POST.get('comment')
+        feedback.comment = new_comment or ''
+        feedback.save()
+        messages.success(request, "Votre commentaire a été mis à jour avec succès.")
+        return redirect('detail_recommandation', recommandation_id=feedback.recommandation.id)
+
+    # Affichez le formulaire de mise à jour avec l'ancien commentaire
+    return render(request, 'recommandation/update_feedback.html', {'feedback': feedback})
+
 
 def get_recommendations_based_on_feedback(user, limit=2):
     # Récupérer les feedbacks "like" de l'utilisateur

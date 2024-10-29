@@ -43,3 +43,7 @@ Coffe,Sousse,25.0,2000000.0,"Puisque la température est 25.0°C et que la préc
 Recommandations supplémentaires : Des mesures doivent être prises pour éviter le ruissellement des eaux."
 Coffe,Sfax,25.0,200002.0,"Puisque la température est 25.0°C et que la précipitation est suffisante (200002.0 mm), une irrigation faible est suggérée pour Coffe dans la région Sfax.
 Recommandations supplémentaires : Des mesures doivent être prises pour éviter le ruissellement des eaux."
+Mahdia,Aubergine,22.0,120.0,"Puisque la température est 22.0°C et que la précipitation est suffisante (120.0 mm), une irrigation faible est suggérée pour pêche dans la région Mahdia."
+Mahdia,Mangue,22.0,120.0,"Puisque la température est 22.0°C et que la précipitation est suffisante (120.0 mm), une irrigation faible est suggérée pour pêche dans la région Mahdia."
+Mangue,Sousse,36.0,2000.0,"Puisque la température est 36.0°C et que la précipitation est suffisante (2000.0 mm), une irrigation faible est suggérée pour Mangue dans la région Sousse.
+Recommandations supplémentaires : Il est conseillé de surveiller le stress hydrique sur les cultures."

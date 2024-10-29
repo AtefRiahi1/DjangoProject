@@ -9,7 +9,6 @@ from django.contrib.auth.decorators import login_required
 import joblib
 from sklearn.calibration import LabelEncoder
 from core.decorators import admin_role_required, both_role_required
-
 from home.models import *
 from home.forms import *
 from about.models import *
@@ -834,7 +833,6 @@ def AdminRecommandationDelete(request, id):
 
 
 
-# Charger le modèle et les encodeurs
 model_path = r'C:\Users\user\Desktop\DjangoProject\Projet_django\dashboard\recommandation\data\irrigation_model.pkl'
 model = joblib.load(model_path)
 crop_encoder = joblib.load(r'C:\Users\user\Desktop\DjangoProject\Projet_django\dashboard\recommandation\data\crop_encoder.pkl')

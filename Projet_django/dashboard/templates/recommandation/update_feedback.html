@@ -1,0 +1,33 @@
+{% extends 'front/base.html' %}
+{% load static %}
+
+{% block title %}Modifier le commenttaire{% endblock title %}
+
+{% block content %}
+<section class="breadcrumbs">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="breadcrumb-wrapper">
+                    <div class="breadcrumb-cnt">
+                        <span><a href="{% url 'homePageFront' %}">Accueil</a><i class="bi bi-arrow-right"></i> Liste des Recommandations</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <h1>Mettre à jour votre commentaire</h1>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="comment">Commentaire</label>
+            <textarea name="comment" id="comment" class="form-control" rows="5">{{ feedback.comment }}</textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Mettre à jour</button>
+        <a href="{% url 'detail_recommandation' feedback.recommandation.id %}" class="btn btn-secondary">Annuler</a>
+    </form>
+</div>
+{% endblock content %}

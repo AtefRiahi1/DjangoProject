@@ -42,21 +42,12 @@ class RecommandationForm(forms.ModelForm):
             'total_precipitation': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Précipitation totale'}),
         }
 class FeedbackForm(forms.ModelForm):
-    like = forms.BooleanField(required=False, label="Like")
-    dislike = forms.BooleanField(required=False, label="Dislike")
+    comment = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Laissez un commentaire'}), required=False)
 
     class Meta:
         model = Feedback
-        fields = ['like', 'dislike']  # Incluez d'autres champs comme 'comment' si nécessaire
+        fields = ['comment']  # Nous ne gérons pas 'like' et 'dislike' ici, ce sera fait dans la vue
 
     def clean(self):
         cleaned_data = super().clean()
-        like = cleaned_data.get('like')
-        dislike = cleaned_data.get('dislike')
-
-        # Vérifiez que l'utilisateur ne peut pas cocher à la fois 'like' et 'dislike'
-        if like and dislike:
-            raise forms.ValidationError("Vous ne pouvez pas sélectionner à la fois 'like' et 'dislike'.")
-        
         return cleaned_data
-
