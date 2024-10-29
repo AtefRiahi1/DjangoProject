@@ -112,17 +112,12 @@ joblib.dump(model, model_path)
 
 print(f"Modèle entraîné sauvegardé sous {model_path}")
 
-# -----------------------------------------------
-# Section pour charger le modèle et faire des prédictions
-# -----------------------------------------------
 
 # Charger le modèle et les encodeurs
 model = joblib.load(model_path)
 crop_encoder = joblib.load(r'C:\Users\user\Desktop\DjangoProject\Projet_django\dashboard\recommandation\data\crop_encoder.pkl')
 region_encoder = joblib.load(r'C:\Users\user\Desktop\DjangoProject\Projet_django\dashboard\recommandation\data\region_encoder.pkl')
 
-# Préparer de nouveaux échantillons pour la prédiction
-# Préparer de nouveaux échantillons pour la prédiction
 new_samples_data = {
     'Crop_Type': ["blé", "maïs", "tomate", "Coffe", "poivron", "haricot", 
                   "patate", "pois", "carotte", "betterave", "pomme de terre", 
