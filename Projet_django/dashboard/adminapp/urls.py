@@ -75,10 +75,10 @@ urlpatterns = [
     path('admin/pages/policy-page', AdminPolicyPage, name='AdminPolicyPage'),
 
     # Admin Recommandations URLS
-path('admin/recommendations', AdminRecommandationList, name='AdminRecommandationList'),
-path('admin/recommendation/create', AdminRecommandationCreate, name='AdminRecommandationCreate'),
-path('admin/recommendation/edit/<int:id>', AdminRecommandationUpdate, name='AdminRecommandationEdit'),
-path('admin/recommendation/delete/<int:id>', AdminRecommandationDelete, name='AdminRecommandationDelete'),
+    path('admin/recommendations', AdminRecommandationList, name='AdminRecommandationList'),
+    path('admin/recommendation/create', AdminRecommandationCreate, name='AdminRecommandationCreate'),
+    path('admin/recommendation/edit/<int:id>', AdminRecommandationUpdate, name='AdminRecommandationEdit'),
+    path('admin/recommendation/delete/<int:id>', AdminRecommandationDelete, name='AdminRecommandationDelete'),
 
 
     path('admin/planslist/', AdminIrrigationPlanList, name='AdminIrrigationPlanList'),
