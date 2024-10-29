@@ -830,13 +830,15 @@ def AdminRecommandationDelete(request, id):
     }
     return render(request, 'recommandation/confirm_delete.html', context)  # Page de confirmation de suppression
 
+# BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# model_path = os.path.join(BASE_DIR, 'irrigation_model.pkl')
+# crop_encoder = os.path.join(BASE_DIR, 'crop_encoder.pkl')
+# model_path = os.path.join(BASE_DIR, 'region_encoder.pkl')
 
-
-
-model_path = r'C:\Users\user\Desktop\DjangoProject\Projet_django\dashboard\recommandation\data\irrigation_model.pkl'
+model_path = r'C:\Users\ASUS\OneDrive\Bureau\DjangoProject\Projet_django\dashboard\recommandation\data\irrigation_model.pkl'
 model = joblib.load(model_path)
-crop_encoder = joblib.load(r'C:\Users\user\Desktop\DjangoProject\Projet_django\dashboard\recommandation\data\crop_encoder.pkl')
-region_encoder = joblib.load(r'C:\Users\user\Desktop\DjangoProject\Projet_django\dashboard\recommandation\data\region_encoder.pkl')
+crop_encoder = joblib.load(r'C:\Users\ASUS\OneDrive\Bureau\DjangoProject\Projet_django\dashboard\recommandation\data\crop_encoder.pkl')
+region_encoder = joblib.load(r'C:\Users\ASUS\OneDrive\Bureau\DjangoProject\Projet_django\dashboard\recommandation\data\region_encoder.pkl')
 
 @login_required(login_url='logIn')
 def AdminRecommandationCreate(request):
@@ -963,8 +965,8 @@ def generate_recommendation(crop_type, region, average_temperature, total_precip
         'total_precipitation': total_precipitation,
         'recommendation': recommendation_text
     }
-
-    results_file = r'C:\Users\user\Desktop\DjangoProject\Projet_django\dashboard\recommandation\data\results.csv'
+    
+    results_file = r'C:\Users\ASUS\OneDrive\Bureau\DjangoProject\Projet_django\dashboard\recommandation\data\results.csv'
     write_to_csv(record, results_file)
 
     return recommendation_text

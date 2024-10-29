@@ -7,7 +7,7 @@ from sklearn.preprocessing import LabelEncoder
 from imblearn.over_sampling import RandomOverSampler
 import joblib
 
-file_path = r'C:\Users\user\Desktop\DjangoProject\Projet_django\dashboard\recommandation\data\results.csv'
+file_path = r'C:\Users\ASUS\OneDrive\Bureau\DjangoProject\Projet_django\dashboard\recommandation\data\results.csv'
 
 data = pd.read_csv(file_path)
 
@@ -38,8 +38,8 @@ data['Crop_Type'] = crop_encoder.fit_transform(data['Crop_Type'])
 data['Region'] = region_encoder.fit_transform(data['Region'])
 
 # Sauvegarder les encodeurs
-joblib.dump(crop_encoder, r'C:\Users\user\Desktop\DjangoProject\Projet_django\dashboard\recommandation\data\crop_encoder.pkl')
-joblib.dump(region_encoder, r'C:\Users\user\Desktop\DjangoProject\Projet_django\dashboard\recommandation\data\region_encoder.pkl')
+joblib.dump(crop_encoder, r'C:\Users\ASUS\OneDrive\Bureau\DjangoProject\Projet_django\dashboard\recommandation\data\crop_encoder.pkl')
+joblib.dump(region_encoder, r'C:\Users\ASUS\OneDrive\Bureau\DjangoProject\Projet_django\dashboard\recommandation\data\region_encoder.pkl')
 
 # Séparer les caractéristiques et la cible
 X = data[['Crop_Type', 'Region', 'Average_Temperature_C', 'Total_Precipitation']]
@@ -107,7 +107,7 @@ print("Rapport de classification :")
 print(classification_report(y_test, y_pred, target_names=label_encoder.inverse_transform(unique_classes_test), labels=unique_classes_test))
 
 # Sauvegarder le modèle entraîné
-model_path = r'C:\Users\user\Desktop\DjangoProject\Projet_django\dashboard\recommandation\data\irrigation_model.pkl'
+model_path = r'C:\Users\ASUS\OneDrive\Bureau\DjangoProject\Projet_django\dashboard\recommandation\data\irrigation_model.pkl'
 joblib.dump(model, model_path)
 
 print(f"Modèle entraîné sauvegardé sous {model_path}")
@@ -115,8 +115,8 @@ print(f"Modèle entraîné sauvegardé sous {model_path}")
 
 # Charger le modèle et les encodeurs
 model = joblib.load(model_path)
-crop_encoder = joblib.load(r'C:\Users\user\Desktop\DjangoProject\Projet_django\dashboard\recommandation\data\crop_encoder.pkl')
-region_encoder = joblib.load(r'C:\Users\user\Desktop\DjangoProject\Projet_django\dashboard\recommandation\data\region_encoder.pkl')
+crop_encoder = joblib.load(r'C:\Users\ASUS\OneDrive\Bureau\DjangoProject\Projet_django\dashboard\recommandation\data\crop_encoder.pkl')
+region_encoder = joblib.load(r'C:\Users\ASUS\OneDrive\Bureau\DjangoProject\Projet_django\dashboard\recommandation\data\region_encoder.pkl')
 
 new_samples_data = {
     'Crop_Type': ["blé", "maïs", "tomate", "Coffe", "poivron", "haricot", 
