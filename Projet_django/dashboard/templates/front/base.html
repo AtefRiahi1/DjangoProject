@@ -150,29 +150,38 @@
                 </div>
                 {% if settings.default_menu_is_active %}
                     <ul>
-    <li class="has-child {% if request.path == '/' %}active{% endif %}">
-        <a href="{% url 'homePageFront' %}">Home</a>
-    </li>
+                        <li class="has-child {% if request.path == '/' %}active{% endif %}">
+                            <a href="{% url 'homePageFront' %}">Home</a>
+                        </li>
+                        {% if not request.user.is_authenticated %}
+                  
+                    <li class="has-child {% if request.path == '/about-us/' %}active{% endif %}">
+                        <a href="{% url 'aboutPageFront' %}">About Us</a>
+                    </li>
+                            {% endif %}
     {% if request.user.is_authenticated %}
     <li class="has-child {% if request.path == '/' %}active{% endif %}">
         <a href="{% url 'zone_list' %}">Zones d'irrigation</a>
     </li>
     {% endif %}
-    <li class="has-child {% if request.path == '/about-us/' %}active{% endif %}">
-        <a href="{% url 'aboutPageFront' %}">About Us</a>
-    </li>
     
+    {% if request.user.is_authenticated %}
     <li class="has-child {% if request.path == '/capteurs/list/' %}active{% endif %}">
         <a href="{% url 'sensor_list' %}">Capteurs</a>
     </li>
-
-    <li class="has-child {% if request.path == '/contact-us/' %}active{% endif %}">
-        <a href="{% url 'contactPageFront' %}">Contact Us</a>
-    </li>
+    {% endif %}
+    {% if request.user.is_authenticated %}
     <li class="has-child {% if request.path == '/recommandations/' %}active{% endif %}">
         <a href="{% url 'recommandation_list' %}">Recommandation</a>
     </li>
-
+    {% endif %}
+  
+    {% if request.user.is_authenticated %}
+    <li class="has-child {% if request.path == '/' %}active{% endif %}">
+        <a href="{% url 'irrigation_schedule_list' %}">My Schedule</a>
+    </li>
+    {% endif %}
+  
     <li class="user-profile"> <!-- Ajoutez une classe ici pour le style -->
         {% if request.user.is_authenticated %}
             <div class="media profile-media">

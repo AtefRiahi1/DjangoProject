@@ -53,7 +53,9 @@
             <div class="price-btn">
                 <a href="{% url 'irrigation_schedule_create' %}" class="btn btn-primary" style="margin-bottom: 10px;">Add Irrigation Schedule</a>
             </div>
-
+            <div class="price-btn">
+                <a href="{% url 'irrigation_plan_list' %}" class="btn btn-primary" style="margin-bottom: 10px;">Planifications</a>
+            </div>
             <div class="row g-4">
                 {% if irrigation_schedules %}
                     {% for schedule in irrigation_schedules %}
