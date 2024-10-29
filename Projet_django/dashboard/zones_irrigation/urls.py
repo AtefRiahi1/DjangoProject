@@ -8,4 +8,8 @@ urlpatterns = [
     path('zones/update/<int:id>/', views.zone_update, name='zone_update'),  # Modifier une zone
     path('zones/delete/<int:id>/', views.zone_delete, name='zone_delete'),  # Supprimer une zone
     path('zones/water-need-prediction/', views.water_need_prediction, name='water_need_prediction'),
+    path('maintenance/index/', views.maintenance_list, name='maintenance_list'),
+    path('maintenance/create/', views.maintenance_create, name='maintenance_create'),
+    path('maintenance/<int:id>/update/', views.maintenance_update, name='maintenance_update'),
+    path('maintenance/<int:id>/delete/', views.maintenance_delete, name='maintenance_delete'),
 ]

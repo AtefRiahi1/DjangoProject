@@ -1,5 +1,5 @@
 from django import forms
-from .models import ZoneIrrigation
+from .models import ZoneIrrigation ,MaintenanceSchedule
 
 class ZoneIrrigationForm(forms.ModelForm):
     class Meta:
@@ -37,3 +37,40 @@ class ZoneIrrigationForm(forms.ModelForm):
         if besoin_eau <= 0:
             raise forms.ValidationError("Le besoin en eau doit être un nombre positif.")
         return besoin_eau
+
+
+
+class MaintenanceScheduleForm(forms.ModelForm):
+    class Meta:
+        model = MaintenanceSchedule
+        fields = ['date_maintenance', 'description', 'completed', 'zone_irrigation']
+        widgets = {
+            'date_maintenance': forms.DateInput(attrs={
+                'class': 'form-control',
+                'type': 'date',
+                'placeholder': 'Date de maintenance'
+            }),
+            'description': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': 'Description de la maintenance',
+                'rows': 3,
+            }),
+            'completed': forms.CheckboxInput(attrs={
+                'class': 'form-check-input'
+            }),
+            'zone_irrigation': forms.Select(attrs={
+                'class': 'form-control'
+            }),
+        }
+
+    def clean_date_maintenance(self):
+        date_maintenance = self.cleaned_data.get('date_maintenance')
+        if date_maintenance is None:
+            raise forms.ValidationError("La date de maintenance est requise.")
+        return date_maintenance
+
+    def clean_description(self):
+        description = self.cleaned_data.get('description')
+        if not description:
+            raise forms.ValidationError("La description est requise.")
+        return description

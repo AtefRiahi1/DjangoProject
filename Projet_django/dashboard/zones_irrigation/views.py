@@ -1,17 +1,26 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import ZoneIrrigation
+from .models import ZoneIrrigation , MaintenanceSchedule
 from django.http import HttpResponseRedirect
-from .forms import ZoneIrrigationForm
+from .forms import ZoneIrrigationForm ,MaintenanceScheduleForm
 from django.contrib.auth.decorators import login_required
 from .services import WaterNeedsPredictor
 import os
+from django.core.paginator import Paginator
 
 @login_required
 def zone_list(request):
     print("zone_list called")
-   
+    
+    # Get the zones specific to the logged-in user
     zones = ZoneIrrigation.objects.filter(user=request.user)
-    return render(request, 'zones_irrigation/zones_index.html', {'zones': zones})
+    
+    # Set up pagination
+    paginator = Paginator(zones, 6)  # Show 6 zones per page
+    page_number = request.GET.get('page')  # Get the current page number from the query parameters
+    page_obj = paginator.get_page(page_number)  # Get the relevant page object
+
+    # Render the template with the paginated zones
+    return render(request, 'zones_irrigation/zones_index.html', {'page_obj': page_obj})
 
 @login_required
 def zone_detail(request, id):
@@ -98,3 +107,57 @@ def water_need_prediction(request):
         'zones': zones,
         'error': error_message,  # Display error message if any
     })
+
+
+@login_required
+def maintenance_list(request):
+    print("maintenance_list called")
+    
+    # Récupérer les maintenances spécifiques à l'utilisateur connecté
+    maintenances = MaintenanceSchedule.objects.filter(zone_irrigation__user=request.user)
+    
+    # Configuration de la pagination
+    paginator = Paginator(maintenances, 6)  # Afficher 6 maintenances par page
+    page_number = request.GET.get('page')  # Obtenir le numéro de page actuel depuis les paramètres de requête
+    page_obj = paginator.get_page(page_number)  # Obtenir l'objet de page pertinent
+
+    # Rendre le template avec les maintenances paginées
+    return render(request, 'Maintenance_schedule/maintenance_index.html', {'page_obj': page_obj})
+
+@login_required
+def maintenance_detail(request, id):
+    maintenance = get_object_or_404(MaintenanceSchedule, id=id)
+    return render(request, 'Maintenance_schedule/maintenance_detail.html', {'maintenance': maintenance})
+
+@login_required
+def maintenance_create(request):
+    if request.method == 'POST':
+        form = MaintenanceScheduleForm(request.POST)  # Utiliser le formulaire approprié pour MaintenanceSchedule
+        if form.is_valid():
+            maintenance = form.save(commit=False)
+            maintenance.zone_irrigation = form.cleaned_data['zone_irrigation']  # Assurez-vous de lier la zone d'irrigation
+            maintenance.save()
+            return redirect('maintenance_list')
+    else:
+        form = MaintenanceScheduleForm()
+    return render(request, 'Maintenance_schedule/maintenance_form.html', {'form': form})
+
+@login_required
+def maintenance_update(request, id):
+    maintenance = get_object_or_404(MaintenanceSchedule, id=id)
+    if request.method == 'POST':
+        form = MaintenanceScheduleForm(request.POST, instance=maintenance)
+        if form.is_valid():
+            form.save()
+            return redirect('maintenance_detail', id=maintenance.id)
+    else:
+        form = MaintenanceScheduleForm(instance=maintenance)
+    return render(request, 'Maintenance_schedule/maintenance_form.html', {'form': form})
+
+@login_required
+def maintenance_delete(request, id):
+    maintenance = get_object_or_404(MaintenanceSchedule, id=id)
+    if request.method == 'POST':
+        maintenance.delete()
+        return redirect('maintenance_list')
+    return render(request, 'Maintenance_schedule/maintenance_confirm_delete.html', {'maintenance': maintenance})
