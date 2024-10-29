@@ -4,7 +4,7 @@ from .models import ZoneIrrigation ,MaintenanceSchedule
 class ZoneIrrigationForm(forms.ModelForm):
     class Meta:
         model = ZoneIrrigation
-        fields = ['nom_zone', 'superficie', 'type_sol', 'besoin_eau', 'image_zone']  
+        fields = ['nom_zone', 'superficie', 'type_sol', 'image_zone']  
         widgets = {
             'nom_zone': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -32,12 +32,7 @@ class ZoneIrrigationForm(forms.ModelForm):
             raise forms.ValidationError("La superficie doit être un nombre positif.")
         return superficie
 
-    def clean_besoin_eau(self):
-        besoin_eau = self.cleaned_data.get('besoin_eau')
-        if besoin_eau <= 0:
-            raise forms.ValidationError("Le besoin en eau doit être un nombre positif.")
-        return besoin_eau
-
+ 
 
 
 class MaintenanceScheduleForm(forms.ModelForm):

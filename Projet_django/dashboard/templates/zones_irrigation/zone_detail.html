@@ -28,9 +28,8 @@
                     {% else %}
                         <p>Aucune image disponible pour cette zone.</p>
                     {% endif %}
-                        <p class="card-text"><strong>Superficie:</strong> {{ zone.superficie }} ha</p>
+                        <p class="card-text"><strong>Superficie:</strong> {{ zone.superficie }} m2</p>
                         <p class="card-text"><strong>Type de Sol:</strong> {{ zone.type_sol }}</p>
-                        <p class="card-text"><strong>Besoin en Eau:</strong> {{ zone.besoin_eau }} m³</p>
                         <div class="text-center">
                             <a href="{% url 'zone_list' %}" class="btn btn-primary">Retour à la liste</a>
                         </div>
