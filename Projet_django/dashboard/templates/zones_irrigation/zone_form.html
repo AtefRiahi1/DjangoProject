@@ -1,0 +1,56 @@
+{% extends 'front/base.html' %}
+
+{% block content %}
+<section class="breadcrumbs">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="breadcrumb-wrapper">
+                    <div class="breadcrumb-cnt">
+                        <h1>Créer / Mettre à jour une Zone</h1>
+                        <span><a href="{% url "zone_list" %}">Zones d'Irrigation</a><i class="bi bi-arrow-right"></i>Créer / Mettre à jour</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="contact-area sec-mar">
+    <div class="container mt-5 d-flex justify-content-center">
+        <form method="post" class="bg-light p-4 rounded shadow" style="max-width: 600px; width: 100%;" enctype="multipart/form-data">
+            {% csrf_token %}
+            <h3 class="mb-4 text-center">Détails de la Zone</h3>
+            {{ form.as_p }}
+
+            <div class="d-flex justify-content-between mt-3">
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-save"></i> Enregistrer
+                </button>
+                <a href="{% url 'zone_list' %}" class="btn btn-secondary">
+                    <i class="bi bi-x-circle"></i> Annuler
+                </a>
+            </div>
+        </form>
+    </div>
+</section>
+
+<style>
+    /* Styles supplémentaires pour améliorer le design */
+    .bg-light {
+        background-color: #f8f9fa !important;
+    }
+    .rounded {
+        border-radius: 0.5rem;
+    }
+    .shadow {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .btn {
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+    .btn:hover {
+        transform: scale(1.05);
+    }
+</style>
+{% endblock %}
