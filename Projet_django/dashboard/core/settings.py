@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'ckeditor',
     'zones_irrigation',
     'recommandation',
+    'planification',
 ]
 
 MIDDLEWARE = [

@@ -1,0 +1,43 @@
+{% extends 'front/base.html' %}
+{% load static %}
+{% block title %}{{ seo.meta_title }} - Create Irrigation Schedule{% endblock title %}
+{% block content %}
+<main class="creasoft-wrap">
+    <section class="breadcrumbs">
+        <div class="container">
+            <h1>Create Irrigation Schedule</h1>
+            <span><a href="{% url 'homePageFront' %}">Home</a> > Create Schedule</span>
+        </div>
+    </section>
+
+    <div class="getin-touch">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="contact-form">
+                    <h3>Create Schedule</h3>
+
+                    <form method="post" class="cntform">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-12">
+                                <label for="start_time">Start Time:</label>
+                                <input type="datetime-local" name="start_time" 
+       required 
+       min="{{ today|date:'Y-m-d' }}T00:00">
+                            </div>
+                            <div class="col-12">
+                                <label for="end_time">End Time:</label>
+                                <input type="datetime-local" name="end_time" required min="{{ today|date:'Y-m-d' }}T00:00">
+                            </div>
+
+                            <div class="col-12">
+                                <input type="submit" class="contact-btn" value="Create Schedule">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

@@ -1,3 +1,4 @@
+
 from django.contrib import admin
 from django.urls import path ,include
 from django.conf import settings
@@ -21,6 +22,7 @@ urlpatterns = [
     path('', include('contact.urls')),
     path('', include('legal.urls')),
     path('', include('marketing.urls')),
+    path('', include('planification.urls')),
     path('', include('custompage.urls')),
     path('', include('zones_irrigation.urls')),
 

@@ -81,4 +81,8 @@ path('admin/recommendation/edit/<int:id>', AdminRecommandationUpdate, name='Admi
 path('admin/recommendation/delete/<int:id>', AdminRecommandationDelete, name='AdminRecommandationDelete'),
 
 
+    path('admin/planslist/', AdminIrrigationPlanList, name='AdminIrrigationPlanList'),
+    path('admin/createp/', AdminIrrigationPlanCreate, name='adminIrrigationPlanCreate'),
+    path('admin/editp/<int:id>/', AdminIrrigationPlanEdit, name='adminIrrigationPlanEdit'),
+    path('admin/deletep/<int:id>/', AdminIrrigationPlanDelete, name='adminIrrigationPlanDelete'),
 ]
