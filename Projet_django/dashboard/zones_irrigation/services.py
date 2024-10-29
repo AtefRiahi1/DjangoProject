@@ -88,6 +88,7 @@ class WaterNeedsPredictor:
         else:
             print("Aucun fruit ou légume détecté.")
             return []
+        
     def predict(self, image_path, superficie):
         if self.model is None:
             raise ValueError("Le modèle n'est pas chargé. Assurez-vous que le fichier model.h5 existe.")

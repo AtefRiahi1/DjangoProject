@@ -235,7 +235,7 @@ def forecast_future(normalized_data, model, scaler):
 # Determine best irrigation day from forecast and display results
 def find_best_irrigation_day(forecast_df):
     temp_min_threshold = 20
-    temp_max_threshold = 28
+    temp_max_threshold = 30
     humidity_min_threshold = 45
     humidity_max_threshold = 70
     wind_speed_max_threshold = 25

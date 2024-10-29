@@ -200,9 +200,12 @@
                       <li><a href="{% url "AdminContactPage" %}">Contact Page</a></li>
                       <li><a href="{% url "AdminTermsPage" %}">Terms Page</a></li>
                       <li><a href="{% url "AdminPolicyPage" %}">Policy Page</a></li>
-                      <li><a href="{% url "AdminRecommandationList" %}">Recommandations</a></li>
-
                     </ul>
+                  </li>
+                  <li class="sidebar-main-title">
+                    <div>
+                      <h6 class="">Modules</h6>
+                    </div>
                   </li>
                   <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#">
                     <svg class="stroke-icon">
@@ -210,12 +213,46 @@
                     </svg>
                     <svg class="fill-icon">
                       <use href="{% static 'admin/assets/svg/icon-sprite.svg' %}#fill-job-search"></use>
-                    </svg><span>Modules</span></a>
+                    </svg><span>Recommandations</span></a>
+                  <ul class="sidebar-submenu">
+                    <li><a href="{% url 'AdminRecommandationList' %}">Recommandations </a></li>
+                  </ul>
+                </li>
+                  <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#">
+                    <svg class="stroke-icon">
+                      <use href="{% static 'admin/assets/svg/icon-sprite.svg' %}#stroke-job-search"></use>
+                    </svg>
+                    <svg class="fill-icon">
+                      <use href="{% static 'admin/assets/svg/icon-sprite.svg' %}#fill-job-search"></use>
+                    </svg><span>Capteurs</span></a>
                   <ul class="sidebar-submenu">
                     <li><a href="{% url 'adminCapteurList' %}">Capteurs / Mesures</a></li>
                   </ul>
                 </li>
-
+                <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#">
+                  <svg class="stroke-icon">
+                    <use href="{% static 'admin/assets/svg/icon-sprite.svg' %}#stroke-job-search"></use>
+                  </svg>
+                  <svg class="fill-icon">
+                    <use href="{% static 'admin/assets/svg/icon-sprite.svg' %}#fill-job-search"></use>
+                  </svg><span>Planifications</span></a>
+                <ul class="sidebar-submenu">
+                  <li><a href="{% url 'AdminIrrigationPlanList' %}">Planifications </a></li>
+                </ul>
+              </li>
+            </li>
+            <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#">
+              <svg class="stroke-icon">
+                <use href="{% static 'admin/assets/svg/icon-sprite.svg' %}#stroke-others"></use>
+              </svg>
+              <svg class="fill-icon">
+                <use href="{% static 'admin/assets/svg/icon-sprite.svg' %}#fill-others"></use>
+              </svg><span>consommationeau</span></a>
+            <ul class="sidebar-submenu">
+              <li><a href="{% url 'adminConsommationEauList' %}">consommationeau List</a></li>
+              <li><a href="{% url 'adminConsommationEauCreate' %}">Create consommationeau</a></li>
+            </ul>
+          </li>
                  <!-- <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#">
                     <svg class="stroke-icon">
                       <use href="{% static 'admin/assets/svg/icon-sprite.svg' %}#stroke-landing-page"></use>
@@ -264,19 +301,7 @@
                 <li><a href="{% url 'userList' %}">User List</a></li>
                 <li><a href="{% url 'createUser' %}">Create User</a></li>
               </ul>
-            </li>
-            <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#">
-              <svg class="stroke-icon">
-                <use href="{% static 'admin/assets/svg/icon-sprite.svg' %}#stroke-others"></use>
-              </svg>
-              <svg class="fill-icon">
-                <use href="{% static 'admin/assets/svg/icon-sprite.svg' %}#fill-others"></use>
-              </svg><span>consommationeau</span></a>
-            <ul class="sidebar-submenu">
-              <li><a href="{% url 'adminConsommationEauList' %}">consommationeau List</a></li>
-              <li><a href="{% url 'adminConsommationEauCreate' %}">Create consommationeau</a></li>
-            </ul>
-          </li>
+           
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#">
               <svg class="stroke-icon">
                 <use href="{% static 'admin/assets/svg/icon-sprite.svg' %}#stroke-form"></use>
