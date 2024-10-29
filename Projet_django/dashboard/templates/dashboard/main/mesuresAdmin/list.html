@@ -1,0 +1,162 @@
+{% extends 'dashboard/base.html' %} {% load static %} {% block title %}Mesures -
+{{ seo_settings.meta_title }}{% endblock title %} {% block content %}
+
+<div class="page-body">
+  <div class="container-fluid">
+    <div class="page-title">
+      <div class="row">
+        <div class="col-6">
+          <h3>Mesures</h3>
+        </div>
+        <div class="col-6">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="{% url 'adminHome' %}">
+                <svg class="stroke-icon">
+                  <use
+                    href="{% static 'admin/assets/svg/icon-sprite.svg' %}#stroke-home"
+                  ></use></svg
+              ></a>
+            </li>
+            <li class="breadcrumb-item">Modules</li>
+            <li class="breadcrumb-item active">Mesures</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Container-fluid starts-->
+  <div class="container-fluid">
+    {% if messages %} {% for message in messages %}
+    <div
+      class="alert alert-{{ message.tags }} alert-dismissible fade show"
+      role="alert"
+    >
+      {{ message }}
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="alert"
+        aria-label="Close"
+      ></button>
+    </div>
+    {% endfor %} {% endif %}
+    <div class="col-md-12 project-list">
+      <div class="card">
+        <div class="row">
+          <div class="col-md-6 p-0 d-flex">
+            <ul class="nav nav-tabs border-tab" id="top-tab" role="tablist">
+              <li class="nav-item">
+                <a
+                  class="nav-link active"
+                  id="top-home-tab"
+                  data-bs-toggle="tab"
+                  href="#top-home"
+                  role="tab"
+                  aria-controls="top-home"
+                  aria-selected="true"
+                  ><svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="feather feather-target"
+                  >
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <circle cx="12" cy="12" r="6"></circle>
+                    <circle cx="12" cy="12" r="2"></circle></svg
+                  >Tous les mesures pour le capteur: {{ capteur.nom_capteur
+                  }}</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div class="col-md-6 p-0"></div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <!-- Zero Configuration  Starts-->
+      <div class="col-sm-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="display" id="basic-1">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Temperature</th>
+                    <th>Moisisure</th>
+                    <th>Date Mesure</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for mesure in mesures %}
+                  <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ mesure.temperature }}</td>
+                    <td>{{ mesure.moisture }}</td>
+                    <td>{{ mesure.date_mesure }}</td>
+                    <td>
+                      <ul class="action">
+                        <li class="delete">
+                          <a href="#" data-slug="{{ mesure.id }}"
+                            ><i class="icon-trash"></i
+                          ></a>
+                        </li>
+                        <script>
+                          document.addEventListener(
+                            "DOMContentLoaded",
+                            (event) => {
+                              var deleteButtons =
+                                document.querySelectorAll(".icon-trash");
+
+                              deleteButtons.forEach(function (button) {
+                                button.addEventListener(
+                                  "click",
+                                  function (event) {
+                                    event.preventDefault();
+
+                                    var url =
+                                      "{% url 'adminMesureDelete' mesure.id %}";
+
+                                    Swal.fire({
+                                      title: "Êtes vous sur?",
+                                      text: "Vous ne pourriez pas y revenir!",
+                                      icon: "warning",
+                                      showCancelButton: true,
+                                      confirmButtonColor: "#3085d6",
+                                      cancelButtonColor: "#d33",
+                                      confirmButtonText: "Oui, supprimer!",
+                                    }).then((result) => {
+                                      if (result.isConfirmed) {
+                                        window.location.href = url;
+                                      }
+                                    });
+                                  }
+                                );
+                              });
+                            }
+                          );
+                        </script>
+                      </ul>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Zero Configuration  Ends-->
+    </div>
+  </div>
+</div>
+{% endblock %}

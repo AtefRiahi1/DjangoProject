@@ -1,0 +1,57 @@
+{% extends 'front/base.html' %} {% block content %}
+
+
+
+<section class="breadcrumbs">
+  <div class="container">
+      <div class="row">
+          <div class="col-12">
+              <div class="breadcrumb-wrapper">
+                  <div class="breadcrumb-cnt">
+                      <h1>Liste des Mesures</h1>
+                      <span><a href="{% url "homePageFront" %}">Home</a><i class="bi bi-arrow-right"></i><a href="{% url "sensor_list" %}">Capteurs</a><i class="bi bi-arrow-right"></i>Mesures</span>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</section>
+
+<section class="container my-4">
+  
+  <h1>Prédiction Irrigation pour {{ capteur.nom_capteur }}</h1>
+
+
+  <a href="{% url 'mesure_list' capteur.id %}" class="btn btn-secondary mb-3"
+    ><i class="bi bi-arrow-left"></i>Retour vers mesures</a
+  >
+  <table class="table table-bordered table-striped shadow ">
+    <thead>
+      <tr>
+        
+        <th>#</th>
+        <th>Date</th>
+        <th>Temperature du sol (°C)</th>
+        <th>Moisisure du sol</th>
+        <th>Status Irrigation à Predire</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for mesure in mesures %}
+      <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>{{ mesure.date_mesure }}</td>
+        <td>{{ mesure.temperature }}</td>
+        <td>{{ mesure.moisture }}</td>
+        <td class={{mesure.should_irrigate|yesno:"bg-success text-light,bg-danger text-light"}}>{{ mesure.should_irrigate|yesno:"Oui,Non" }}</td>
+        
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="4" class="text-center">Aucune mesure disponible pour prédiction.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

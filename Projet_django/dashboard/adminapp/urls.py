@@ -1,5 +1,6 @@
 from django.urls import path
 from adminapp.views import *
+from capteurs.views import *
 
 urlpatterns = [
     path('admin/dashboard', adminHome, name='adminHome'),
@@ -85,4 +86,15 @@ urlpatterns = [
     path('admin/createp/', AdminIrrigationPlanCreate, name='adminIrrigationPlanCreate'),
     path('admin/editp/<int:id>/', AdminIrrigationPlanEdit, name='adminIrrigationPlanEdit'),
     path('admin/deletep/<int:id>/', AdminIrrigationPlanDelete, name='adminIrrigationPlanDelete'),
+# Admin sensors URLS
+   path('admin/capteurs', adminSensorList, name='adminCapteurList'),
+    path('admin/capteurs/create', adminSensorCreate, name='adminCapteurCreate'),
+    path('admin/capteurs/edit/<int:id>', adminSensorEdit, name='adminCapteurEdit'),
+    path('admin/capteurs/delete/<int:id>', adminSensorDelete, name='adminCapteurDelete'),
+
+   # Admin mesures URLS
+    
+    path('admin/capteurs/<int:capteur_id>/mesures/',adminMesureList,name='adminMesureList'),
+    path('admin/capteurs/mesures/<int:mesure_id>/delete/', adminMesureDelete, name='adminMesureDelete'),
+    #path('admin/predict/<int:sensor_id>/', views.predict_irrigation, name='predict_irrigation'),
 ]

@@ -22,3 +22,5 @@ pandas
 scikit-learn
 tensorflow
 transformers torch
+numpy
+scikit-learn
